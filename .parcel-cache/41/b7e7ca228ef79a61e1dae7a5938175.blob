@@ -1,0 +1,23 @@
+const recipeContainer = document.querySelector('.recipe');
+
+const timeout = function (s) {
+  return new Promise(function (_, reject) {
+    setTimeout(function () {
+      reject(new Error(`Request took too long! Timeout after ${s} second`));
+    }, s * 1000);
+  });
+};
+
+// https://forkify-api.herokuapp.com/v2
+//—————————————————————【】——————————————————————————
+
+const test1 = async function () {
+  try {
+    const result = await fetch(
+      'https://restcountries.eu/rest/v2/name/Peru?fullText=true'
+    );
+    let parsedResult = await result.json(); //store promise value in new var
+    return parsedResult[0]; // RETURN PROMISE (fulfilled value of a promise)
+  } catch {}
+};
+console.log(test1());
