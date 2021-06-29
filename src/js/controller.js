@@ -1,8 +1,10 @@
-import favicon from 'url:../img/favicon.png'
-import icons from 'url:../img/icons.svg'
-import logo from 'url:../img/logo.png'
+import favicon from 'url:../img/favicon.png';
+import icons from 'url:../img/icons.svg';
+import logo from 'url:../img/logo.png';
 
 if (module.hot) module.hot.accept();
+import 'core-js/stable'; // "enables polyfills"
+import 'regenerator-runtime/runtime'; //"enables polyfills for async JS"
 const recipeContainer = document.querySelector('.recipe');
 
 const timeout = function (s) {
@@ -16,10 +18,21 @@ const timeout = function (s) {
 // https://forkify-api.herokuapp.com/v2
 //—————————————————————【】——————————————————————————
 
+const renderSpinner = function (parentEl) {
+  const markup = `<div class="spinner">
+  <svg>
+    <use href="${icons}#icon-loader"></use>
+  </svg>
+</div>`;
+  parentEl.innerHTML = '';
+  parentEl.insertAdjacentHTML('afterbegin', markup);
+};
+
 const showRecipe = async function () {
   try {
     //@  Fetch recipe data  ——————————————————————————————————————————————————————
     let recipeID = '5ed6604591c37cdc054bc886';
+    renderSpinner(recipeContainer);
     const res = await fetch(
       `https://forkify-api.herokuapp.com/api/v2/recipes/${recipeID}?key=6ff36859-c745-4afa-abe5-d1acdd55cf65`
     );
@@ -51,14 +64,18 @@ const showRecipe = async function () {
       <svg class="recipe__info-icon">
         <use href="${icons}#icon-clock"></use>
       </svg>
-      <span class="recipe__info-data recipe__info-data--minutes">${recipe.cookingTime}</span>
+      <span class="recipe__info-data recipe__info-data--minutes">${
+        recipe.cookingTime
+      }</span>
       <span class="recipe__info-text">minutes</span>
     </div>
     <div class="recipe__info">
       <svg class="recipe__info-icon">
         <use href="${icons}#icon-users"></use>
       </svg>
-      <span class="recipe__info-data recipe__info-data--people">${recipe.servings}</span>
+      <span class="recipe__info-data recipe__info-data--people">${
+        recipe.servings
+      }</span>
       <span class="recipe__info-text">servings</span>
 
       <div class="recipe__info-buttons">
@@ -91,18 +108,20 @@ const showRecipe = async function () {
   <div class="recipe__ingredients">
     <h2 class="heading--2">Recipe ingredients</h2>
     <ul class="recipe__ingredient-list">
-      ${recipe.ingredients.map((ing)=>{
-        return `<li class="recipe__ingredient">
+      ${recipe.ingredients
+        .map(ing => {
+          return `<li class="recipe__ingredient">
         <svg class="recipe__icon">
           <use href="${icons}#icon-check"></use>
         </svg>
-        <div class="recipe__quantity">${ing.quantity || ""}</div>
+        <div class="recipe__quantity">${ing.quantity || ''}</div>
         <div class="recipe__description">
           <span class="recipe__unit">${ing.unit}</span>
           ${ing.description}
         </div>
-      </li>`
-      }).join("")}
+      </li>`;
+        })
+        .join('')}
      
     </ul>
   </div>
@@ -111,7 +130,9 @@ const showRecipe = async function () {
     <h2 class="heading--2">How to cook it</h2>
     <p class="recipe__directions-text">
       This recipe was carefully designed and tested by
-      <span class="recipe__publisher">${recipe.publisher}</span>. Please check out
+      <span class="recipe__publisher">${
+        recipe.publisher
+      }</span>. Please check out
       directions at their website.
     </p>
     <a
