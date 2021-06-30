@@ -472,13 +472,15 @@ const renderSpinner = function (parentEl) {
 };
 const showRecipe = async function () {
   try {
+    const id = window.location.hash.slice(1);
+    if (!id) return;
     // @  Fetch recipe data  ——————————————————————————————————————————————————————
-    let recipeID = '5ed6604591c37cdc054bc886';
     renderSpinner(recipeContainer);
-    const res = await fetch(`https://forkify-api.herokuapp.com/api/v2/recipes/${recipeID}?key=6ff36859-c745-4afa-abe5-d1acdd55cf65`);
+    const res = await fetch(`https://forkify-api.herokuapp.com/api/v2/recipes/${id}?key=6ff36859-c745-4afa-abe5-d1acdd55cf65`);
     if (!res.ok) throw new Error('food cannot be found in our database');
     // custom error msg
     let parsedRes = await res.json();
+    console.log(parsedRes);
     // Reformat the info captured from our fetch request so the names are simpler
     let {recipe} = parsedRes.data;
     recipe = {
@@ -491,7 +493,7 @@ const showRecipe = async function () {
       cookingTime: recipe.cooking_time,
       ingredients: recipe.ingredients
     };
-    console.log(recipe);
+    // console.log(recipe);
     // @  Render the recipe  ——————————————————————————————————————————————————————
     const markup = `<figure class="recipe__fig">
     <img src=${recipe.image} alt=${recipe.title} class="recipe__img" />
@@ -586,7 +588,9 @@ const showRecipe = async function () {
     console.error(err);
   }
 };
-showRecipe();
+// window.addEventListener('hashchange', callbackA)
+// window.addEventListener('load', callbackA)
+['hashchange', 'load'].forEach(eventType => window.addEventListener(eventType, callbackA));
 
 },{"url:../img/favicon.png":"6I4FL","url:../img/icons.svg":"3t5dV","url:../img/logo.png":"56yxw","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","core-js/stable":"1PFvP","regenerator-runtime/runtime":"62Qib"}],"6I4FL":[function(require,module,exports) {
 module.exports = require('./bundle-url').getBundleURL() + "favicon.98e27482.png"
