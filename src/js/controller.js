@@ -1,11 +1,16 @@
-import favicon from 'url:../img/favicon.png';
-import icons from 'url:../img/icons.svg';
-import logo from 'url:../img/logo.png';
+// import everything labelled as an export in model.js
+import * as model from './model.js';
 
+// default NPM imports
 if (module.hot) module.hot.accept();
 import 'core-js/stable'; // "enables polyfills"
 import 'regenerator-runtime/runtime'; //"enables polyfills for async JS"
 const recipeContainer = document.querySelector('.recipe');
+
+// Import icons for package bundler
+import favicon from 'url:../img/favicon.png';
+import icons from 'url:../img/icons.svg';
+import logo from 'url:../img/logo.png';
 
 const timeout = function (s) {
   return new Promise(function (_, reject) {
@@ -30,29 +35,16 @@ const renderSpinner = function (parentEl) {
 
 const showRecipe = async function () {
   try {
-    const id= window.location.hash.slice(1)
-    if(!id) return
-    //@  Fetch recipe data  ——————————————————————————————————————————————————————
+    const id = window.location.hash.slice(1);
+    if (!id) return; // guard clause if we have no ID
     renderSpinner(recipeContainer);
-    const res = await fetch(
-      `https://forkify-api.herokuapp.com/api/v2/recipes/${id}?key=6ff36859-c745-4afa-abe5-d1acdd55cf65`
-    );
-    if (!res.ok) throw new Error('food cannot be found in our database'); // custom error msg
-    let parsedRes = await res.json();
-    console.log(parsedRes)
-    // Reformat the info captured from our fetch request so the names are simpler
-    let { recipe } = parsedRes.data;
-    recipe = {
-      id: recipe.id,
-      title: recipe.title,
-      publisher: recipe.publisher,
-      sourceUrl: recipe.source_url,
-      image: recipe.image_url,
-      servings: recipe.servings,
-      cookingTime: recipe.cooking_time,
-      ingredients: recipe.ingredients,
-    };
-    // console.log(recipe);
+
+    //@  Load the recipe (async F which returns a promise)
+    // the below function returns nothing, so it needs no variable. just changes the state object
+    // it IS async, which returns a promise- so we need await to halt our ƒ()'s execution
+    await model.loadRecipe(id);
+    const { recipe } = model.state; // destructure the state object for the recipe obj
+
     //@  Render the recipe  ——————————————————————————————————————————————————————
     const markup = `<figure class="recipe__fig">
     <img src=${recipe.image} alt=${recipe.title} class="recipe__img" />
@@ -154,10 +146,12 @@ const showRecipe = async function () {
     console.error(err);
   }
 };
-// window.addEventListener('hashchange', callbackA) 
-// window.addEventListener('load', callbackA) 
+// window.addEventListener('hashchange', callbackA)
+// window.addEventListener('load', callbackA)
 
-['hashchange','load'].forEach((eventType)=> window.addEventListener(eventType, callbackA))
+['hashchange', 'load'].forEach(eventType =>
+  window.addEventListener(eventType, showRecipe)
+);
 
 // Render the recipe to the side whenever the website's hash changes
 

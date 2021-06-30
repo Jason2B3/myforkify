@@ -442,13 +442,15 @@ id) /*: string*/
 }
 
 },{}],"3miIZ":[function(require,module,exports) {
+var _modelJs = require('./model.js');
+require('core-js/stable');
+require('regenerator-runtime/runtime');
 require('url:../img/favicon.png');
 var _urlImgIconsSvg = require('url:../img/icons.svg');
 var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
 var _urlImgIconsSvgDefault = _parcelHelpers.interopDefault(_urlImgIconsSvg);
 require('url:../img/logo.png');
-require('core-js/stable');
-require('regenerator-runtime/runtime');
+// default NPM imports
 if (module.hot) module.hot.accept();
 // "enables polyfills for async JS"
 const recipeContainer = document.querySelector('.recipe');
@@ -474,26 +476,14 @@ const showRecipe = async function () {
   try {
     const id = window.location.hash.slice(1);
     if (!id) return;
-    // @  Fetch recipe data  ——————————————————————————————————————————————————————
+    // guard clause if we have no ID
     renderSpinner(recipeContainer);
-    const res = await fetch(`https://forkify-api.herokuapp.com/api/v2/recipes/${id}?key=6ff36859-c745-4afa-abe5-d1acdd55cf65`);
-    if (!res.ok) throw new Error('food cannot be found in our database');
-    // custom error msg
-    let parsedRes = await res.json();
-    console.log(parsedRes);
-    // Reformat the info captured from our fetch request so the names are simpler
-    let {recipe} = parsedRes.data;
-    recipe = {
-      id: recipe.id,
-      title: recipe.title,
-      publisher: recipe.publisher,
-      sourceUrl: recipe.source_url,
-      image: recipe.image_url,
-      servings: recipe.servings,
-      cookingTime: recipe.cooking_time,
-      ingredients: recipe.ingredients
-    };
-    // console.log(recipe);
+    // @  Load the recipe (async F which returns a promise)
+    // the below function returns nothing, so it needs no variable. just changes the state object
+    // it IS async, which returns a promise- so we need await to halt our ƒ()'s execution
+    await _modelJs.loadRecipe(id);
+    const {recipe} = _modelJs.state;
+    // destructure the state object for the recipe obj
     // @  Render the recipe  ——————————————————————————————————————————————————————
     const markup = `<figure class="recipe__fig">
     <img src=${recipe.image} alt=${recipe.title} class="recipe__img" />
@@ -590,9 +580,9 @@ const showRecipe = async function () {
 };
 // window.addEventListener('hashchange', callbackA)
 // window.addEventListener('load', callbackA)
-['hashchange', 'load'].forEach(eventType => window.addEventListener(eventType, callbackA));
+['hashchange', 'load'].forEach(eventType => window.addEventListener(eventType, showRecipe));
 
-},{"url:../img/favicon.png":"6I4FL","url:../img/icons.svg":"3t5dV","url:../img/logo.png":"56yxw","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","core-js/stable":"1PFvP","regenerator-runtime/runtime":"62Qib"}],"6I4FL":[function(require,module,exports) {
+},{"url:../img/favicon.png":"6I4FL","url:../img/icons.svg":"3t5dV","url:../img/logo.png":"56yxw","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","core-js/stable":"1PFvP","regenerator-runtime/runtime":"62Qib","./model.js":"1hp6y"}],"6I4FL":[function(require,module,exports) {
 module.exports = require('./bundle-url').getBundleURL() + "favicon.98e27482.png"
 },{"./bundle-url":"3seVR"}],"3seVR":[function(require,module,exports) {
 "use strict";
@@ -13141,6 +13131,44 @@ try {
   Function("r", "regeneratorRuntime = r")(runtime);
 }
 
-},{}]},["7BONy","3miIZ"], "3miIZ", "parcelRequire2d58")
+},{}],"1hp6y":[function(require,module,exports) {
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "state", function () {
+  return state;
+});
+_parcelHelpers.export(exports, "loadRecipe", function () {
+  return loadRecipe;
+});
+const state = {
+  recipe: {}
+};
+const loadRecipe = async function (id) {
+  // this function only changes the state object (DN return anything)
+  try {
+    const res = await fetch(`https://forkify-api.herokuapp.com/api/v2/recipes/${id}?key=6ff36859-c745-4afa-abe5-d1acdd55cf65`);
+    if (!res.ok) throw new Error('food cannot be found in our database');
+    // custom error msg
+    let parsedRes = await res.json();
+    console.log(parsedRes);
+    // Reformat the info captured from our fetch request so the names are simpler
+    const {recipe} = parsedRes.data;
+    state.recipe = {
+      id: recipe.id,
+      title: recipe.title,
+      publisher: recipe.publisher,
+      sourceUrl: recipe.source_url,
+      image: recipe.image_url,
+      servings: recipe.servings,
+      cookingTime: recipe.cooking_time,
+      ingredients: recipe.ingredients
+    };
+    console.log(state.recipe);
+  } catch (err) {
+    alert(err);
+  }
+};
+
+},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}]},["7BONy","3miIZ"], "3miIZ", "parcelRequire2d58")
 
 //# sourceMappingURL=index.250b04c7.js.map
