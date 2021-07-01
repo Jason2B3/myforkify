@@ -12987,19 +12987,19 @@ _parcelHelpers.export(exports, "state", function () {
 _parcelHelpers.export(exports, "loadRecipe", function () {
   return loadRecipe;
 });
+require('regenerator-runtime');
+var _configJs = require('./config.js');
+var _helpersJs = require('./helpers.js');
 const state = {
   recipe: {}
 };
 const loadRecipe = async function (id) {
   // this function only changes the state object (DN return anything)
   try {
-    const res = await fetch(`https://forkify-api.herokuapp.com/api/v2/recipes/${id}?key=6ff36859-c745-4afa-abe5-d1acdd55cf65`);
-    if (!res.ok) throw new Error('food cannot be found in our database');
-    // custom error msg
-    let parsedRes = await res.json();
-    console.log(parsedRes);
+    // Store resolved fetchAPI promise value from getJSON() into "data"
+    const data = await _helpersJs.getJSON(`${_configJs.API_URL}/${id}`);
     // Reformat the info captured from our fetch request so the names are simpler
-    const {recipe} = parsedRes.data;
+    const {recipe} = data.data;
     state.recipe = {
       id: recipe.id,
       title: recipe.title,
@@ -13012,9 +13012,36 @@ const loadRecipe = async function (id) {
     };
     console.log(state.recipe);
   } catch (err) {
-    alert(err);
+    // Temp error handling
+    console.log(`MODEL: ${err}`);
   }
 };
+
+},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","regenerator-runtime":"62Qib","./config.js":"6pr2F","./helpers.js":"581KF"}],"6pr2F":[function(require,module,exports) {
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "API_URL", function () {
+  return API_URL;
+});
+const API_URL = 'https://forkify-api.herokuapp.com/api/v2/recipes';
+
+},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"581KF":[function(require,module,exports) {
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "getJSON", function () {
+  return getJSON;
+});
+async function getJSON(url) {
+  // feed it the fetch URL, then your customized error message
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    if (!res.ok) throw new Error(`${data.message} (${res.status})`);
+    return data;
+  } catch (errMSG) {
+    console.error(`HELPERS: ${errMSG}`);
+  }
+}
 
 },{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"9e6b9":[function(require,module,exports) {
 var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");

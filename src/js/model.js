@@ -1,3 +1,7 @@
+import {async} from 'regenerator-runtime';
+import {API_URL} from './config.js'
+import {getJSON} from './helpers.js'
+
 export const state = {
   recipe: {},
 };
@@ -5,14 +9,10 @@ export const state = {
 export const loadRecipe = async function (id) {
   // this function only changes the state object (DN return anything)
   try {
-    const res = await fetch(
-      `https://forkify-api.herokuapp.com/api/v2/recipes/${id}?key=6ff36859-c745-4afa-abe5-d1acdd55cf65`
-    );
-    if (!res.ok) throw new Error('food cannot be found in our database'); // custom error msg
-    let parsedRes = await res.json();
-    console.log(parsedRes);
+    // Store resolved fetchAPI promise value from getJSON() into "data"
+    const data= await getJSON(`${API_URL}/${id}`)
     // Reformat the info captured from our fetch request so the names are simpler
-    const { recipe } = parsedRes.data;
+    const { recipe } = data.data;
     state.recipe = {
       id: recipe.id,
       title: recipe.title,
@@ -25,6 +25,7 @@ export const loadRecipe = async function (id) {
     };
     console.log(state.recipe);
   } catch (err) {
-    alert(err);
+    // Temp error handling
+    console.log(`MODEL: ${err}`);
   }
 };
