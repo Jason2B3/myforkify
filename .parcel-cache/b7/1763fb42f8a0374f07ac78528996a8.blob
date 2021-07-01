@@ -1,0 +1,50 @@
+var _modelJs = require('./model.js');
+var _viewsRecipeViewJs = require('./views/recipeView.js');
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+var _viewsRecipeViewJsDefault = _parcelHelpers.interopDefault(_viewsRecipeViewJs);
+require('core-js/stable');
+require('regenerator-runtime/runtime');
+require('url:../img/favicon.png');
+var _urlImgIconsSvg = require('url:../img/icons.svg');
+var _urlImgIconsSvgDefault = _parcelHelpers.interopDefault(_urlImgIconsSvg);
+require('url:../img/logo.png');
+// default NPM imports
+if (module.hot) module.hot.accept();
+// —————————————————————【 END OF IMPORTS ZONE 】——————————————————————————
+const recipeContainer = document.querySelector('.recipe');
+const timeout = function (s) {
+  return new Promise(function (_, reject) {
+    setTimeout(function () {
+      reject(new Error(`Request took too long! Timeout after ${s} second`));
+    }, s * 1000);
+  });
+};
+// https://forkify-api.herokuapp.com/v2
+const renderSpinner = function (parentEl) {
+  const markup = `<div class="spinner">
+  <svg>
+    <use href="${_urlImgIconsSvgDefault.default}#icon-loader"></use>
+  </svg>
+</div>`;
+  parentEl.innerHTML = '';
+  parentEl.insertAdjacentHTML('afterbegin', markup);
+};
+const showRecipe = async function () {
+  try {
+    const id = window.location.hash.slice(1);
+    if (!id) return;
+    // guard clause if we have no ID
+    renderSpinner(recipeContainer);
+    // @  Load the recipe (async F which returns a promise)
+    // the below function returns nothing, so it needs no variable. just changes the state object
+    // it IS async, which returns a promise- so we need await to halt our ƒ()'s execution
+    await _modelJs.loadRecipe(id);
+    // @  Render the recipe
+    _viewsRecipeViewJsDefault.default.render(_modelJs.state.recipe);
+  } catch (err) {
+    console.error(err);
+  }
+};
+// window.addEventListener('hashchange', callbackA)
+// window.addEventListener('load', callbackA)
+['hashchange', 'load'].forEach(eventType => window.addEventListener(eventType, showRecipe));
