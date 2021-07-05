@@ -2,6 +2,7 @@
 import favicon from 'url:../../img/favicon.png';
 import icons from 'url:../../img/icons.svg';
 import logo from 'url:../../img/logo.png';
+
 var Fraction = require('fractional').Fraction;
 console.log(Fraction);
 
@@ -15,6 +16,14 @@ class RecipeView {
     const markup = this._generateMarkup();
     this._clear();
     this._parentElement.insertAdjacentHTML('afterbegin', markup); // add your markup which is pre-styled in SASS
+  }
+
+  addHandlerRender(handler) {
+    //% MVC Version of PubSub PART 2
+    // Needs access to the controlRecipes ƒ() from controller
+    // SOLUTION: call addHandlerRender() from controller and feed it controlRecipes as an arg
+    window.addEventListener('hashchange', handler);
+    window.addEventListener('load', handler);
   }
 
   renderSpinner() {

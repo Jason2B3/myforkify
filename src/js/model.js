@@ -1,6 +1,6 @@
-import {async} from 'regenerator-runtime';
-import {API_URL} from './config.js'
-import {getJSON} from './helpers.js'
+import { async } from 'regenerator-runtime';
+import { API_URL } from './config.js';
+import { getJSON } from './helpers.js';
 
 export const state = {
   recipe: {},
@@ -10,7 +10,7 @@ export const loadRecipe = async function (id) {
   // this function only changes the state object (DN return anything)
   try {
     // Store resolved fetchAPI promise value from getJSON() into "data"
-    const data= await getJSON(`${API_URL}/${id}`)
+    const data = await getJSON(`${API_URL}/${id}`);
     // Reformat the info captured from our fetch request so the names are simpler
     const { recipe } = data.data;
     state.recipe = {

@@ -477,9 +477,11 @@ const controlRecipes = async function () {
     console.error(err);
   }
 };
-// window.addEventListener('hashchange', callbackA)
-// window.addEventListener('load', callbackA)
-['hashchange', 'load'].forEach(eventType => window.addEventListener(eventType, controlRecipes));
+// % MVC Version of PubSub PART 1
+const init = function () {
+  _viewsRecipeViewJsDefault.default.addHandlerRender(controlRecipes);
+};
+init();
 
 },{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","core-js/stable":"1PFvP","regenerator-runtime/runtime":"62Qib","./model.js":"1hp6y","./views/recipeView.js":"9e6b9"}],"5gA8y":[function(require,module,exports) {
 "use strict";
@@ -13017,13 +13019,17 @@ const loadRecipe = async function (id) {
   }
 };
 
-},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","regenerator-runtime":"62Qib","./config.js":"6pr2F","./helpers.js":"581KF"}],"6pr2F":[function(require,module,exports) {
+},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","./config.js":"6pr2F","./helpers.js":"581KF","regenerator-runtime":"62Qib"}],"6pr2F":[function(require,module,exports) {
 var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
 _parcelHelpers.defineInteropFlag(exports);
 _parcelHelpers.export(exports, "API_URL", function () {
   return API_URL;
 });
+_parcelHelpers.export(exports, "TIMEOUT_SEC", function () {
+  return TIMEOUT_SEC;
+});
 const API_URL = 'https://forkify-api.herokuapp.com/api/v2/recipes';
+const TIMEOUT_SEC = 10;
 
 },{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"581KF":[function(require,module,exports) {
 var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
@@ -13031,19 +13037,28 @@ _parcelHelpers.defineInteropFlag(exports);
 _parcelHelpers.export(exports, "getJSON", function () {
   return getJSON;
 });
+var _configJs = require('./config.js');
+const timeout = function (s) {
+  return new Promise(function (_, reject) {
+    setTimeout(function () {
+      reject(new Error(`Request took too long! Timeout after ${s} second`));
+    }, s * 1000);
+  });
+};
 async function getJSON(url) {
-  // feed it the fetch URL, then your customized error message
   try {
-    const res = await fetch(url);
+    const res = await Promise.race([fetch(url), timeout(_configJs.TIMEOUT_SEC)]);
     const data = await res.json();
     if (!res.ok) throw new Error(`${data.message} (${res.status})`);
+    console.clear();
+    // hides annoying JSON errors
     return data;
-  } catch (errMSG) {
-    console.error(`HELPERS: ${errMSG}`);
+  } catch (err) {
+    throw err;
   }
 }
 
-},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"9e6b9":[function(require,module,exports) {
+},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","./config.js":"6pr2F"}],"9e6b9":[function(require,module,exports) {
 var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
 _parcelHelpers.defineInteropFlag(exports);
 require('url:../../img/favicon.png');
@@ -13063,6 +13078,13 @@ class RecipeView {
     const markup = this._generateMarkup();
     this._clear();
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
+  }
+  addHandlerRender(handler) {
+    // % MVC Version of PubSub PART 2
+    // Needs access to the controlRecipes ƒ() from controller
+    // SOLUTION: call addHandlerRender() from controller and feed it controlRecipes as an arg
+    window.addEventListener('hashchange', handler);
+    window.addEventListener('load', handler);
   }
   renderSpinner() {
     const markup = `<div class="spinner">

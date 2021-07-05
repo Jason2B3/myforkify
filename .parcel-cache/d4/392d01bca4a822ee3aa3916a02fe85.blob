@@ -1,0 +1,1 @@
+module.exports = require('./bundle-url').getBundleURL() + "controller.HASH_REF_87a9db67f99ce6fbd629ba704988cb5e.js"
