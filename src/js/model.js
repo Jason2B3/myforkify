@@ -25,7 +25,9 @@ export const loadRecipe = async function (id) {
     };
     console.log(state.recipe);
   } catch (err) {
-    // Temp error handling
-    console.log(`MODEL: ${err}`);
+    throw err; 
+    //@ ERROR HANDLING PART 1
+    // PASSES REJECTED PROMISE TO THE OTHER ASYNC FUNCTION THAT USES loadRecipe()
   }
 };
+

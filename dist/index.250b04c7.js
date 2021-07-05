@@ -474,7 +474,10 @@ const controlRecipes = async function () {
     // @  Render the recipe
     _viewsRecipeViewJsDefault.default.render(_modelJs.state.recipe);
   } catch (err) {
-    console.error(err);
+    // @ ERROR HANDLING PART 2
+    // We use functions from view to render the visuals to convey an error
+    // However, we call those render functions in controller (as MVC encourages)
+    _viewsRecipeViewJsDefault.default.renderError();
   }
 };
 // % MVC Version of PubSub PART 1
@@ -13014,8 +13017,7 @@ const loadRecipe = async function (id) {
     };
     console.log(state.recipe);
   } catch (err) {
-    // Temp error handling
-    console.log(`MODEL: ${err}`);
+    throw err;
   }
 };
 
@@ -13072,10 +13074,42 @@ class RecipeView {
     this._parentElement = document.querySelector('.recipe');
     // recipeContainer fr/ controller
     this._data;
+    // the data originally from model goes here (usable file-wide, now)
+    this._errorMSG = `Could not find this recipe. Please try again`;
+    this._message = "";
   }
   render(data) {
     this._data = data;
     const markup = this._generateMarkup();
+    this._clear();
+    this._parentElement.insertAdjacentHTML('afterbegin', markup);
+  }
+  renderError(message = this._errorMSG) {
+    // We want to render content when a fetchAPI call goes wrong
+    // Regular shmucks don't check the console logs
+    const markup = `<div class="error">
+    <div>
+      <svg>
+        <use href="${_urlImgIconsSvgDefault.default}#icon-alert-triangle"></use>
+      </svg>
+    </div>
+    <p>${this._errorMSG}</p>
+    </div>`;
+    this._clear();
+    this._parentElement.insertAdjacentHTML('afterbegin', markup);
+  }
+  renderMessage() {
+    // We want to render content when a fetchAPI call goes wrong
+    // Regular shmucks don't check the console logs
+    const markup = `<div class="recipe">
+    <div class="message">
+      <div>
+        <svg>
+          <use href="${_urlImgIconsSvgDefault.default}#icon-smile"></use>
+        </svg>
+      </div>
+      <p>${this._message}</p>
+    </div>`;
     this._clear();
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
   }
@@ -13092,7 +13126,7 @@ class RecipeView {
       <use href="${_urlImgIconsSvgDefault.default}#icon-loader"></use>
     </svg>
   </div>`;
-    this._parentElement.innerHTML = '';
+    this._clear();
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
   }
   _clear() {

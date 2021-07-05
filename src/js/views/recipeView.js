@@ -10,6 +10,8 @@ class RecipeView {
   constructor() {
     this._parentElement = document.querySelector('.recipe'); // recipeContainer fr/ controller
     this._data; // the data originally from model goes here (usable file-wide, now)
+    this._errorMSG= `Could not find this recipe. Please try again`
+    this._message= "" //! set your success message later!!
   }
   render(data) {
     this._data = data;
@@ -17,7 +19,35 @@ class RecipeView {
     this._clear();
     this._parentElement.insertAdjacentHTML('afterbegin', markup); // add your markup which is pre-styled in SASS
   }
-
+  renderError(message= this._errorMSG) {
+    // We want to render content when a fetchAPI call goes wrong
+    // Regular shmucks don't check the console logs
+    const markup = `<div class="error">
+    <div>
+      <svg>
+        <use href="${icons}#icon-alert-triangle"></use>
+      </svg>
+    </div>
+    <p>${this._errorMSG}</p>
+    </div>`;
+    this._clear();
+    this._parentElement.insertAdjacentHTML('afterbegin', markup);
+  }
+  renderMessage() {
+    // We want to render content when a fetchAPI call goes wrong
+    // Regular shmucks don't check the console logs
+    const markup = `<div class="recipe">
+    <div class="message">
+      <div>
+        <svg>
+          <use href="${icons}#icon-smile"></use>
+        </svg>
+      </div>
+      <p>${this._message}</p>
+    </div>`;
+    this._clear();
+    this._parentElement.insertAdjacentHTML('afterbegin', markup);
+  }
   addHandlerRender(handler) {
     //% MVC Version of PubSub PART 2
     // Needs access to the controlRecipes ƒ() from controller
@@ -32,7 +62,7 @@ class RecipeView {
       <use href="${icons}#icon-loader"></use>
     </svg>
   </div>`;
-    this._parentElement.innerHTML = '';
+    this._clear()
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
   }
 

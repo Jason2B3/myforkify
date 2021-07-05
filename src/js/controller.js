@@ -29,11 +29,14 @@ const controlRecipes = async function () {
     //@  Load the recipe (async F which returns a promise)
     // the below function returns nothing, so it needs no variable. just changes the state object
     // it IS async, which returns a promise- so we need await to halt our ƒ()'s execution
-    await model.loadRecipe(id);
+    await model.loadRecipe(id); 
     //@  Render the recipe
     recipeView.render(model.state.recipe);
   } catch (err) {
-    console.error(err);
+    //@ ERROR HANDLING PART 2
+    // We use functions from view to render the visuals to convey an error
+    // However, we call those render functions in controller (as MVC encourages)
+    recipeView.renderError() 
   }
 };
 
