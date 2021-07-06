@@ -1,0 +1,15 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+require('url:../../img/icons.svg');
+class View {
+  _data;
+  constructor() {
+    this._parentElement = document.querySelector('.recipe');
+    // recipeContainer fr/ controller
+    this._data;
+    // the data originally from model goes here (usable file-wide, now)
+    this._errorMSG = `Could not find this recipe. Please try again`;
+    this._message = '';
+  }
+}
+exports.default = View;

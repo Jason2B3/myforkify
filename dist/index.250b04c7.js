@@ -446,13 +446,13 @@ var _modelJs = require('./model.js');
 var _viewsRecipeViewJs = require('./views/recipeView.js');
 var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
 var _viewsRecipeViewJsDefault = _parcelHelpers.interopDefault(_viewsRecipeViewJs);
+var _viewsSearchViewJs = require('./views/searchView.js');
 require('core-js/stable');
 require('regenerator-runtime/runtime');
 // default NPM imports
 if (module.hot) module.hot.accept();
 // "enables polyfills for async JS"
 // —————————————————————【 END OF IMPORTS ZONE 】——————————————————————————
-const recipeContainer = document.querySelector('.recipe');
 const timeout = function (s) {
   return new Promise(function (_, reject) {
     setTimeout(function () {
@@ -480,13 +480,31 @@ const controlRecipes = async function () {
     _viewsRecipeViewJsDefault.default.renderError();
   }
 };
-// % MVC Version of PubSub PART 1
+const controlSearchResults = async function () {
+  try {
+    // 1) Get search query and clear input field
+    const sq = _viewsSearchViewJs.default.getQuery();
+    // grab search field text
+    if (!sq) return;
+    // guard clause in case we search nothing
+    console.log(`search term: ${sq}`);
+    // 2) Load search results
+    await _modelJs.loadSearchResults(sq);
+    // load search results
+    console.log(_modelJs.state.search);
+  } catch (err) {
+    console.error(err);
+  }
+};
+// % MVC Version of PubSub PART 1 and 2
 const init = function () {
   _viewsRecipeViewJsDefault.default.addHandlerRender(controlRecipes);
+  // #PART 1
+  _viewsSearchViewJs.default.addHandlerSearch(controlSearchResults);
 };
 init();
 
-},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","core-js/stable":"1PFvP","regenerator-runtime/runtime":"62Qib","./model.js":"1hp6y","./views/recipeView.js":"9e6b9"}],"5gA8y":[function(require,module,exports) {
+},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","core-js/stable":"1PFvP","regenerator-runtime/runtime":"62Qib","./model.js":"1hp6y","./views/recipeView.js":"9e6b9","./views/searchView.js":"3rYQ6"}],"5gA8y":[function(require,module,exports) {
 "use strict";
 
 exports.interopDefault = function (a) {
@@ -12989,6 +13007,9 @@ _parcelHelpers.defineInteropFlag(exports);
 _parcelHelpers.export(exports, "state", function () {
   return state;
 });
+_parcelHelpers.export(exports, "loadSearchResults", function () {
+  return loadSearchResults;
+});
 _parcelHelpers.export(exports, "loadRecipe", function () {
   return loadRecipe;
 });
@@ -12996,7 +13017,35 @@ require('regenerator-runtime');
 var _configJs = require('./config.js');
 var _helpersJs = require('./helpers.js');
 const state = {
-  recipe: {}
+  recipe: {},
+  search: {
+    query: "",
+    // what the user searched
+    results: []
+  }
+};
+const loadSearchResults = async function (searchFieldInput) {
+  // MAIN OBJECTIVE: Change state object with your search results
+  try {
+    state.search.query = searchFieldInput;
+    // $ update state obj
+    // Scan API for your search query
+    // fetchAPI returns an array of objects containing ID's recipe titles, images...etc
+    const searchResults = await _helpersJs.getJSON(`https://forkify-api.herokuapp.com/api/search?q=${searchFieldInput}`);
+    const {recipes} = searchResults;
+    const reformattedResults = recipes.map(rec => {
+      return {
+        id: rec.id,
+        title: rec.title,
+        publisher: rec.publisher,
+        sourceUrl: rec.source_url,
+        image: rec.image_url
+      };
+    });
+    state.search.results = reformattedResults;
+  } catch (err) {
+    throw err;
+  }
 };
 const loadRecipe = async function (id) {
   // this function only changes the state object (DN return anything)
@@ -13021,7 +13070,7 @@ const loadRecipe = async function (id) {
   }
 };
 
-},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","./config.js":"6pr2F","./helpers.js":"581KF","regenerator-runtime":"62Qib"}],"6pr2F":[function(require,module,exports) {
+},{"regenerator-runtime":"62Qib","./config.js":"6pr2F","./helpers.js":"581KF","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"6pr2F":[function(require,module,exports) {
 var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
 _parcelHelpers.defineInteropFlag(exports);
 _parcelHelpers.export(exports, "API_URL", function () {
@@ -13052,21 +13101,20 @@ async function getJSON(url) {
     const res = await Promise.race([fetch(url), timeout(_configJs.TIMEOUT_SEC)]);
     const data = await res.json();
     if (!res.ok) throw new Error(`${data.message} (${res.status})`);
-    console.clear();
-    // hides annoying JSON errors
     return data;
   } catch (err) {
     throw err;
   }
 }
 
-},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","./config.js":"6pr2F"}],"9e6b9":[function(require,module,exports) {
+},{"./config.js":"6pr2F","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"9e6b9":[function(require,module,exports) {
 var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
 _parcelHelpers.defineInteropFlag(exports);
 require('url:../../img/favicon.png');
 var _urlImgIconsSvg = require('url:../../img/icons.svg');
 var _urlImgIconsSvgDefault = _parcelHelpers.interopDefault(_urlImgIconsSvg);
 require('url:../../img/logo.png');
+// import View from './View.js'
 var Fraction = require('fractional').Fraction;
 console.log(Fraction);
 class RecipeView {
@@ -13076,7 +13124,7 @@ class RecipeView {
     this._data;
     // the data originally from model goes here (usable file-wide, now)
     this._errorMSG = `Could not find this recipe. Please try again`;
-    this._message = "";
+    this._message = '';
   }
   render(data) {
     this._data = data;
@@ -13113,13 +13161,6 @@ class RecipeView {
     this._clear();
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
   }
-  addHandlerRender(handler) {
-    // % MVC Version of PubSub PART 2
-    // Needs access to the controlRecipes ƒ() from controller
-    // SOLUTION: call addHandlerRender() from controller and feed it controlRecipes as an arg
-    window.addEventListener('hashchange', handler);
-    window.addEventListener('load', handler);
-  }
   renderSpinner() {
     const markup = `<div class="spinner">
     <svg>
@@ -13132,6 +13173,14 @@ class RecipeView {
   _clear() {
     // Clear out all elements inside a specific HTML element
     this._parentElement.innerHTML = '';
+  }
+  /*—————————————————————【 UNIQUE METHODS 】——————————————————————————*/
+  addHandlerRender(handler) {
+    // # MVC Version of PubSub PART 2
+    // Needs access to the controlRecipes ƒ() from controller
+    // SOLUTION: call addHandlerRender() from controller and feed it controlRecipes as an arg
+    window.addEventListener('hashchange', handler);
+    window.addEventListener('load', handler);
   }
   _generateMarkupIngredient(ing) {
     return `<li class="recipe__ingredient">
@@ -13646,6 +13695,31 @@ Fraction.primeFactors = function(n)
 
 module.exports.Fraction = Fraction
 
-},{}]},["7BONy","3miIZ"], "3miIZ", "parcelRequire2d58")
+},{}],"3rYQ6":[function(require,module,exports) {
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+class SearchView {
+  _parentEl = document.querySelector('.search');
+  // search form's container
+  getQuery() {
+    // Get what was typed in the search field, and clear it
+    const query = this._parentEl.querySelector('.search__field').value;
+    this._clearInput();
+    return query;
+  }
+  _clearInput() {
+    this._parentEl.querySelector('.search__field').value = "";
+  }
+  addHandlerSearch(handler) {
+    // # PUB SUB INSTANCE 2: Publisher
+    this._parentEl.addEventListener('submit', e => {
+      e.preventDefault();
+      handler();
+    });
+  }
+}
+exports.default = new SearchView();
+
+},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}]},["7BONy","3miIZ"], "3miIZ", "parcelRequire2d58")
 
 //# sourceMappingURL=index.250b04c7.js.map

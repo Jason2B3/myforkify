@@ -2,6 +2,7 @@
 import * as model from './model.js';
 // Import object from recipeView.js
 import recipeView from './views/recipeView.js';
+import {default as searchView} from './views/searchView.js'
 
 // default NPM imports
 if (module.hot) module.hot.accept();
@@ -10,7 +11,6 @@ import 'regenerator-runtime/runtime'; //"enables polyfills for async JS"
 
 //—————————————————————【 END OF IMPORTS ZONE 】——————————————————————————
 
-const recipeContainer = document.querySelector('.recipe');
 const timeout = function (s) {
   return new Promise(function (_, reject) {
     setTimeout(function () {
@@ -40,9 +40,29 @@ const controlRecipes = async function () {
   }
 };
 
-//% MVC Version of PubSub PART 1
+const controlSearchResults= async function(){
+  try{
+    // 1) Get search query and clear input field
+    const sq= searchView.getQuery() // grab search field text
+    if(!sq) return // guard clause in case we search nothing
+    console.log(`search term: ${sq}`)
+    
+    // 2) Load search results
+    await model.loadSearchResults(sq) // load search results
+    console.log(model.state.search)
+    
+    // 3) Render results
+    // coming up soon!
+    
+  } catch(err){
+    console.error(err) //! TEMP
+  }
+}
+
+//% MVC Version of PubSub PART 1 and 2
 const init= function(){
-  recipeView.addHandlerRender(controlRecipes)
+  recipeView.addHandlerRender(controlRecipes) //#PART 1
+  searchView.addHandlerSearch(controlSearchResults) //# PART 2
 }
 init()
 

@@ -2,24 +2,26 @@
 import favicon from 'url:../../img/favicon.png';
 import icons from 'url:../../img/icons.svg';
 import logo from 'url:../../img/logo.png';
+// import View from './View.js'
 
 var Fraction = require('fractional').Fraction;
 console.log(Fraction);
 
-class RecipeView {
+class RecipeView{
   constructor() {
     this._parentElement = document.querySelector('.recipe'); // recipeContainer fr/ controller
     this._data; // the data originally from model goes here (usable file-wide, now)
-    this._errorMSG= `Could not find this recipe. Please try again`
-    this._message= "" //! set your success message later!!
+    this._errorMSG = `Could not find this recipe. Please try again`;
+    this._message = ''; //! set your success message later!!
   }
   render(data) {
     this._data = data;
     const markup = this._generateMarkup();
     this._clear();
-    this._parentElement.insertAdjacentHTML('afterbegin', markup); // add your markup which is pre-styled in SASS
+    this._parentElement.insertAdjacentHTML('afterbegin', markup); 
+    // add your markup which is pre-styled in SASS
   }
-  renderError(message= this._errorMSG) {
+  renderError(message = this._errorMSG) {
     // We want to render content when a fetchAPI call goes wrong
     // Regular shmucks don't check the console logs
     const markup = `<div class="error">
@@ -48,27 +50,28 @@ class RecipeView {
     this._clear();
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
   }
-  addHandlerRender(handler) {
-    //% MVC Version of PubSub PART 2
-    // Needs access to the controlRecipes ƒ() from controller
-    // SOLUTION: call addHandlerRender() from controller and feed it controlRecipes as an arg
-    window.addEventListener('hashchange', handler);
-    window.addEventListener('load', handler);
-  }
-
+  
   renderSpinner() {
     const markup = `<div class="spinner">
     <svg>
       <use href="${icons}#icon-loader"></use>
     </svg>
   </div>`;
-    this._clear()
+    this._clear();
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
   }
 
   _clear() {
     // Clear out all elements inside a specific HTML element
     this._parentElement.innerHTML = '';
+  }
+  //—————————————————————【 UNIQUE METHODS 】——————————————————————————
+  addHandlerRender(handler) {
+    //# MVC Version of PubSub PART 2
+    // Needs access to the controlRecipes ƒ() from controller
+    // SOLUTION: call addHandlerRender() from controller and feed it controlRecipes as an arg
+    window.addEventListener('hashchange', handler);
+    window.addEventListener('load', handler);
   }
   _generateMarkupIngredient(ing) {
     return `<li class="recipe__ingredient">

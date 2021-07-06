@@ -1,0 +1,21 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+class SearchView {
+  _parentEl = document.querySelector('.search');
+  // search form's container
+  getQuery() {
+    // get the value of what's typed in the search field
+    return this._parentEl.querySelector('.search__field').value;
+  }
+  clearInput() {
+    this._parentEl.innerTex;
+  }
+  addHandlerSearch(handler) {
+    // # PUB SUB INSTANCE 2: Publisher
+    this._parentEl.addEventListener('submit', e => {
+      e.preventDefault();
+      handler();
+    });
+  }
+}
+exports.default = new SearchView();
