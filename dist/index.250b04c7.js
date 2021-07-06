@@ -447,6 +447,8 @@ var _viewsRecipeViewJs = require('./views/recipeView.js');
 var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
 var _viewsRecipeViewJsDefault = _parcelHelpers.interopDefault(_viewsRecipeViewJs);
 var _viewsSearchViewJs = require('./views/searchView.js');
+var _viewsResultsViewJs = require('./views/resultsView.js');
+var _viewsResultsViewJsDefault = _parcelHelpers.interopDefault(_viewsResultsViewJs);
 require('core-js/stable');
 require('regenerator-runtime/runtime');
 // default NPM imports
@@ -482,18 +484,19 @@ const controlRecipes = async function () {
 };
 const controlSearchResults = async function () {
   try {
+    // 0) Render Spinner while we wait for real stuff to happen
+    _viewsResultsViewJsDefault.default.renderSpinner();
     // 1) Get search query and clear input field
     const sq = _viewsSearchViewJs.default.getQuery();
     // grab search field text
     if (!sq) return;
     // guard clause in case we search nothing
-    console.log(`search term: ${sq}`);
     // 2) Load search results
     await _modelJs.loadSearchResults(sq);
     // load search results
     console.log(_modelJs.state.search);
   } catch (err) {
-    console.error(err);
+    _viewsResultsViewJsDefault.default.renderError();
   }
 };
 // % MVC Version of PubSub PART 1 and 2
@@ -504,7 +507,7 @@ const init = function () {
 };
 init();
 
-},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","core-js/stable":"1PFvP","regenerator-runtime/runtime":"62Qib","./model.js":"1hp6y","./views/recipeView.js":"9e6b9","./views/searchView.js":"3rYQ6"}],"5gA8y":[function(require,module,exports) {
+},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","core-js/stable":"1PFvP","regenerator-runtime/runtime":"62Qib","./model.js":"1hp6y","./views/recipeView.js":"9e6b9","./views/searchView.js":"3rYQ6","./views/resultsView.js":"17PYN"}],"5gA8y":[function(require,module,exports) {
 "use strict";
 
 exports.interopDefault = function (a) {
@@ -13019,7 +13022,7 @@ var _helpersJs = require('./helpers.js');
 const state = {
   recipe: {},
   search: {
-    query: "",
+    query: '',
     // what the user searched
     results: []
   }
@@ -13064,7 +13067,6 @@ const loadRecipe = async function (id) {
       cookingTime: recipe.cooking_time,
       ingredients: recipe.ingredients
     };
-    console.log(state.recipe);
   } catch (err) {
     throw err;
   }
@@ -13114,67 +13116,19 @@ require('url:../../img/favicon.png');
 var _urlImgIconsSvg = require('url:../../img/icons.svg');
 var _urlImgIconsSvgDefault = _parcelHelpers.interopDefault(_urlImgIconsSvg);
 require('url:../../img/logo.png');
-// import View from './View.js'
+var _ViewJs = require('./View.js');
+var _ViewJsDefault = _parcelHelpers.interopDefault(_ViewJs);
 var Fraction = require('fractional').Fraction;
-console.log(Fraction);
-class RecipeView {
-  constructor() {
-    this._parentElement = document.querySelector('.recipe');
-    // recipeContainer fr/ controller
-    this._data;
-    // the data originally from model goes here (usable file-wide, now)
-    this._errorMSG = `Could not find this recipe. Please try again`;
-    this._message = '';
-  }
-  render(data) {
-    this._data = data;
-    const markup = this._generateMarkup();
-    this._clear();
-    this._parentElement.insertAdjacentHTML('afterbegin', markup);
-  }
-  renderError(message = this._errorMSG) {
-    // We want to render content when a fetchAPI call goes wrong
-    // Regular shmucks don't check the console logs
-    const markup = `<div class="error">
-    <div>
-      <svg>
-        <use href="${_urlImgIconsSvgDefault.default}#icon-alert-triangle"></use>
-      </svg>
-    </div>
-    <p>${this._errorMSG}</p>
-    </div>`;
-    this._clear();
-    this._parentElement.insertAdjacentHTML('afterbegin', markup);
-  }
-  renderMessage() {
-    // We want to render content when a fetchAPI call goes wrong
-    // Regular shmucks don't check the console logs
-    const markup = `<div class="recipe">
-    <div class="message">
-      <div>
-        <svg>
-          <use href="${_urlImgIconsSvgDefault.default}#icon-smile"></use>
-        </svg>
-      </div>
-      <p>${this._message}</p>
-    </div>`;
-    this._clear();
-    this._parentElement.insertAdjacentHTML('afterbegin', markup);
-  }
-  renderSpinner() {
-    const markup = `<div class="spinner">
-    <svg>
-      <use href="${_urlImgIconsSvgDefault.default}#icon-loader"></use>
-    </svg>
-  </div>`;
-    this._clear();
-    this._parentElement.insertAdjacentHTML('afterbegin', markup);
-  }
-  _clear() {
-    // Clear out all elements inside a specific HTML element
-    this._parentElement.innerHTML = '';
-  }
-  /*—————————————————————【 UNIQUE METHODS 】——————————————————————————*/
+class RecipeView extends _ViewJsDefault.default {
+  // ~ CHILD SPECIFIC VARIABLES:
+  _parentElement = document.querySelector('.recipe');
+  // recipeContainer fr/ controller
+  _data;
+  // the data originally from model goes here (usable file-wide, now)
+  _errorMSG = `Could not find this recipe. Please try again`;
+  _message = '';
+  // ! set your success message later!!
+  // —————————————————————【 UNIQUE METHODS 】——————————————————————————
   addHandlerRender(handler) {
     // # MVC Version of PubSub PART 2
     // Needs access to the controlRecipes ƒ() from controller
@@ -13274,7 +13228,7 @@ class RecipeView {
 }
 exports.default = new RecipeView();
 
-},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","url:../../img/favicon.png":"6I4FL","url:../../img/icons.svg":"3t5dV","url:../../img/logo.png":"56yxw","fractional":"5jzJt"}],"6I4FL":[function(require,module,exports) {
+},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","url:../../img/favicon.png":"6I4FL","url:../../img/icons.svg":"3t5dV","url:../../img/logo.png":"56yxw","fractional":"5jzJt","./View.js":"48jhP"}],"6I4FL":[function(require,module,exports) {
 module.exports = require('./bundle-url').getBundleURL() + "favicon.98e27482.png"
 },{"./bundle-url":"3seVR"}],"3seVR":[function(require,module,exports) {
 "use strict";
@@ -13695,7 +13649,74 @@ Fraction.primeFactors = function(n)
 
 module.exports.Fraction = Fraction
 
-},{}],"3rYQ6":[function(require,module,exports) {
+},{}],"48jhP":[function(require,module,exports) {
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _urlImgIconsSvg = require('url:../../img/icons.svg');
+var _urlImgIconsSvgDefault = _parcelHelpers.interopDefault(_urlImgIconsSvg);
+class View {
+  // ~ The child classes will define these variables up top
+  // ~ each child's variable values will differ (diff parent elements for example)
+  /*CHILD-SPECIFIC VARIABLES
+  _data;
+  _parentElement = document.querySelector('.recipe'); // recipeContainer fr/ controller
+  _data; // the data originally from model goes here (usable file-wide, now)
+  _errorMSG = `Could not find this recipe. Please try again`;
+  _message = '';
+  */
+  // —————————————————————【】——————————————————————————
+  render(data) {
+    this._data = data;
+    const markup = this._generateMarkup();
+    this._clear();
+    this._parentElement.insertAdjacentHTML('afterbegin', markup);
+  }
+  renderError(message = this._errorMSG) {
+    // We want to render content when a fetchAPI call goes wrong
+    // Regular shmucks don't check the console logs
+    const markup = `<div class="error">
+    <div>
+      <svg>
+        <use href="${_urlImgIconsSvgDefault.default}#icon-alert-triangle"></use>
+      </svg>
+    </div>
+    <p>${this._errorMSG}</p>
+    </div>`;
+    this._clear();
+    this._parentElement.insertAdjacentHTML('afterbegin', markup);
+  }
+  renderMessage() {
+    // We want to render content when a fetchAPI call goes wrong
+    // Regular shmucks don't check the console logs
+    const markup = `<div class="recipe">
+    <div class="message">
+      <div>
+        <svg>
+          <use href="${_urlImgIconsSvgDefault.default}#icon-smile"></use>
+        </svg>
+      </div>
+      <p>${this._message}</p>
+    </div>`;
+    this._clear();
+    this._parentElement.insertAdjacentHTML('afterbegin', markup);
+  }
+  renderSpinner() {
+    const markup = `<div class="spinner">
+    <svg>
+      <use href="${_urlImgIconsSvgDefault.default}#icon-loader"></use>
+    </svg>
+  </div>`;
+    this._clear();
+    this._parentElement.insertAdjacentHTML('afterbegin', markup);
+  }
+  _clear() {
+    // Clear out all elements inside a specific HTML element
+    this._parentElement.innerHTML = '';
+  }
+}
+exports.default = View;
+
+},{"url:../../img/icons.svg":"3t5dV","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"3rYQ6":[function(require,module,exports) {
 var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
 _parcelHelpers.defineInteropFlag(exports);
 class SearchView {
@@ -13708,7 +13729,7 @@ class SearchView {
     return query;
   }
   _clearInput() {
-    this._parentEl.querySelector('.search__field').value = "";
+    this._parentEl.querySelector('.search__field').value = '';
   }
   addHandlerSearch(handler) {
     // # PUB SUB INSTANCE 2: Publisher
@@ -13720,6 +13741,18 @@ class SearchView {
 }
 exports.default = new SearchView();
 
-},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}]},["7BONy","3miIZ"], "3miIZ", "parcelRequire2d58")
+},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"17PYN":[function(require,module,exports) {
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+require('url:../../img/icons.svg');
+var _ViewJs = require('./View.js');
+var _ViewJsDefault = _parcelHelpers.interopDefault(_ViewJs);
+class resultsView extends _ViewJsDefault.default {
+  _parentElement = document.querySelector('.results');
+  _errorMSG = `Recipe not found`;
+}
+exports.default = new resultsView();
+
+},{"url:../../img/icons.svg":"3t5dV","./View.js":"48jhP","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}]},["7BONy","3miIZ"], "3miIZ", "parcelRequire2d58")
 
 //# sourceMappingURL=index.250b04c7.js.map

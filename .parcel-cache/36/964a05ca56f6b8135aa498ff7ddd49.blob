@@ -1,0 +1,10 @@
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+require('url:../../img/icons.svg');
+var _ViewJs = require('./View.js');
+var _ViewJsDefault = _parcelHelpers.interopDefault(_ViewJs);
+class resultsView extends _ViewJsDefault.default {
+  _parentElement = document.querySelector(".results");
+  _errorMSG = `Searv a different dish`;
+}
+exports.default = new resultsView();
