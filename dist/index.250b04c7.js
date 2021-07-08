@@ -449,6 +449,8 @@ var _viewsRecipeViewJsDefault = _parcelHelpers.interopDefault(_viewsRecipeViewJs
 var _viewsSearchViewJs = require('./views/searchView.js');
 var _viewsResultsViewJs = require('./views/resultsView.js');
 var _viewsResultsViewJsDefault = _parcelHelpers.interopDefault(_viewsResultsViewJs);
+var _viewsPaginationViewJs = require('./views/paginationView.js');
+var _viewsPaginationViewJsDefault = _parcelHelpers.interopDefault(_viewsPaginationViewJs);
 require('core-js/stable');
 require('regenerator-runtime/runtime');
 // default NPM imports
@@ -463,6 +465,7 @@ const timeout = function (s) {
   });
 };
 // https://forkify-api.herokuapp.com/v2
+// @ CONTROLLER: Click on a listed recipe to load/render
 const controlRecipes = async function () {
   try {
     const id = window.location.hash.slice(1);
@@ -470,19 +473,20 @@ const controlRecipes = async function () {
     if (!id) return;
     // guard clause if we have no ID
     _viewsRecipeViewJsDefault.default.renderSpinner();
-    // @  Load the recipe (async F which returns a promise)
+    // 1)  Load the recipe (async F which returns a promise)
+    await _modelJs.loadRecipe(id);
     // the below function returns nothing, so it needs no variable. just changes the state object
     // it IS async, which returns a promise- so we need await to halt our ƒ()'s execution
-    await _modelJs.loadRecipe(id);
-    // @  Render the recipe
+    // 2)  Render the recipe
     _viewsRecipeViewJsDefault.default.render(_modelJs.state.recipe);
   } catch (err) {
-    // @ ERROR HANDLING PART 2
+    // # ERROR HANDLING PART 2/3
     // We use functions from view to render the visuals to convey an error
     // However, we call those render functions in controller (as MVC encourages)
     _viewsRecipeViewJsDefault.default.renderError();
   }
 };
+// @ CONTROLLER: Using the searchbar
 const controlSearchResults = async function () {
   try {
     // 0) Render Spinner while we wait for real stuff to happen
@@ -497,19 +501,30 @@ const controlSearchResults = async function () {
     // load search results
     // 3) Render results
     _viewsResultsViewJsDefault.default.render(_modelJs.getSearchResultsPage());
+    // 4) Render initial pagination buttons
+    _viewsPaginationViewJsDefault.default.render(_modelJs.state.search);
   } catch (err) {
     _viewsResultsViewJsDefault.default.renderError(_modelJs.state.search.results);
   }
 };
-// % MVC Version of PubSub PART 1 and 2
+// @ CONTROLLER: Pressing a pagination button to go forward or backward
+const controlPagination = function (goToPage) {
+  // 1) Render NEW results
+  _viewsResultsViewJsDefault.default.render(_modelJs.getSearchResultsPage(goToPage));
+  // 2) Render NEW pagination buttons
+  _viewsPaginationViewJsDefault.default.render(_modelJs.state.search);
+};
+// @ MVC Version of PubSub PART 1 and 2
 const init = function () {
   _viewsRecipeViewJsDefault.default.addHandlerRender(controlRecipes);
-  // #PART 1
+  // PART 1
   _viewsSearchViewJs.default.addHandlerSearch(controlSearchResults);
+  // PART 2
+  _viewsPaginationViewJsDefault.default.addHandlerClick(controlPagination);
 };
 init();
 
-},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","core-js/stable":"1PFvP","regenerator-runtime/runtime":"62Qib","./model.js":"1hp6y","./views/recipeView.js":"9e6b9","./views/searchView.js":"3rYQ6","./views/resultsView.js":"17PYN"}],"5gA8y":[function(require,module,exports) {
+},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","core-js/stable":"1PFvP","regenerator-runtime/runtime":"62Qib","./model.js":"1hp6y","./views/recipeView.js":"9e6b9","./views/searchView.js":"3rYQ6","./views/resultsView.js":"17PYN","./views/paginationView.js":"5u5Fw"}],"5gA8y":[function(require,module,exports) {
 "use strict";
 
 exports.interopDefault = function (a) {
@@ -13038,6 +13053,8 @@ const state = {
 const loadSearchResults = async function (searchFieldInput) {
   // MAIN OBJECTIVE: Change state object with your search results
   try {
+    model.state.search.page = 1;
+    // reset page to 1 after every search
     state.search.query = searchFieldInput;
     // $ update state obj
     // Scan API for your search query
@@ -13076,7 +13093,7 @@ const loadRecipe = async function (id) {
       sourceUrl: recipe.source_url,
       image: recipe.image_url,
       servings: recipe.servings,
-      // ! not always there
+      // not always there
       cookingTime: recipe.cooking_time,
       ingredients: recipe.ingredients
     };
@@ -13084,7 +13101,7 @@ const loadRecipe = async function (id) {
     throw err;
   }
 };
-const getSearchResultsPage = function (page = 1) {
+const getSearchResultsPage = function (page = state.search.page) {
   // Adjust page buttons to a "start at 1" type of count
   // RES_PER_PAGE is set to 10 in our config file
   state.search.page = page;
@@ -13675,10 +13692,15 @@ class View {
     this._data = data;
     // Set data variable equal to the info we pass in as an arg (info came from model=>controller)
     const markup = this._generateMarkup();
+    // % SO IMPORTANT:
+    // % This will generate markup by passing on the job to another module's generateMarkup method.
+    // % You define how that works in that module.
+    // % But you can use this render function on autopilot every single time
     this._clear();
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
   }
   renderError(message = this._errorMSG) {
+    // # ERROR HANDLING PART 3/3
     // We want to render content when a fetchAPI call goes wrong
     // Regular shmucks don't check the console logs
     const markup = `<div class="error">
@@ -13785,6 +13807,69 @@ class resultsView extends _ViewJsDefault.default {
   }
 }
 exports.default = new resultsView();
+
+},{"url:../../img/icons.svg":"3t5dV","./View.js":"48jhP","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"5u5Fw":[function(require,module,exports) {
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _urlImgIconsSvg = require('url:../../img/icons.svg');
+var _urlImgIconsSvgDefault = _parcelHelpers.interopDefault(_urlImgIconsSvg);
+var _ViewJs = require('./View.js');
+var _ViewJsDefault = _parcelHelpers.interopDefault(_ViewJs);
+class paginationView extends _ViewJsDefault.default {
+  _parentElement = document.querySelector('.pagination');
+  _data;
+  addHandlerClick(handler) {
+    this._parentElement.addEventListener('click', function (e) {
+      const nearestBtn = e.target.closest('.btn--inline');
+      if (!nearestBtn) return;
+      // guard clause in case we click the parent
+      // console.log(nearestBtn)
+      const goToPage = +nearestBtn.dataset.goto;
+      handler(goToPage);
+    });
+  }
+  _generateMarkup() {
+    const numPages = Math.ceil(this._data.results.length / this._data.resultsPerPage);
+    const currentPage = this._data.page;
+    // Page 1, there are other pages
+    if (currentPage === 1 && numPages > 1) {
+      return `<button data-goto="${currentPage + 1}" class="btn--inline pagination__btn--next">
+      <span>Page ${currentPage + 1}</span>
+      <svg class="search__icon">
+        <use href="${_urlImgIconsSvgDefault.default}#icon-arrow-right"></use>
+      </svg>
+    </button>`;
+    }
+    // Last Page
+    if (currentPage === numPages && numPages > 1) {
+      return `<button data-goto="${currentPage - 1}" class="btn--inline pagination__btn--prev">
+      <svg class="search__icon">
+        <use href="${_urlImgIconsSvgDefault.default}#icon-arrow-left"></use>
+      </svg>
+      <span>Page ${currentPage - 1}</span>
+    </button>`;
+      ;
+    }
+    // Page in between 2 others
+    if (currentPage < numPages) {
+      return `<button data-goto="${currentPage - 1}" class="btn--inline pagination__btn--prev">
+      <svg class="search__icon">
+        <use href="${_urlImgIconsSvgDefault.default}#icon-arrow-left"></use>
+      </svg>
+      <span>Page ${currentPage - 1}</span>
+    </button>
+    <button data-goto="${currentPage + 1}" class="btn--inline pagination__btn--next">
+      <span>Page ${currentPage + 1}</span>
+      <svg class="search__icon">
+        <use href="${_urlImgIconsSvgDefault.default}#icon-arrow-right"></use>
+      </svg>
+    </button>`;
+    }
+    // Page 1, with NO other pages
+    return "";
+  }
+}
+exports.default = new paginationView();
 
 },{"url:../../img/icons.svg":"3t5dV","./View.js":"48jhP","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}]},["7BONy","3miIZ"], "3miIZ", "parcelRequire2d58")
 

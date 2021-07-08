@@ -19,12 +19,17 @@ export default class View {
       // Guard clause in case we retreive no data, OR that data is an empty array
     this._data = data;
     // Set data variable equal to the info we pass in as an arg (info came from model=>controller)
-    const markup = this._generateMarkup();
+    const markup = this._generateMarkup(); //% SO IMPORTANT: 
+    //% This will generate markup by passing on the job to another module's generateMarkup method. 
+    //% You define how that works in that module. 
+    //% But you can use this render function on autopilot every single time
+
     this._clear();
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
     // add your markup which is pre-styled in SASS
   }
   renderError(message = this._errorMSG) {
+    //# ERROR HANDLING PART 3/3
     // We want to render content when a fetchAPI call goes wrong
     // Regular shmucks don't check the console logs
     const markup = `<div class="error">
