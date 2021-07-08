@@ -10,7 +10,7 @@ class RecipeView extends View {
   //~ CHILD SPECIFIC VARIABLES:
   _parentElement = document.querySelector('.recipe'); // recipeContainer fr/ controller
   _data; // the data originally from model goes here (usable file-wide, now)
-  _errorMSG = `Could not find this recipe. Please try again`;
+  _errorMSG = `Operations may have failed in the model.js loadRecipe ƒ()`;
   _message = ''; //! set your success message later!!
 
   //—————————————————————【 UNIQUE METHODS 】——————————————————————————
@@ -26,16 +26,20 @@ class RecipeView extends View {
     <svg class="recipe__icon">
       <use href="${icons}#icon-check"></use>
     </svg>
-    <div class="recipe__quantity">${
-      ing.quantity ? new Fraction(ing.quantity).toString() : ''
-    }</div>
     <div class="recipe__description">
-      <span class="recipe__unit">${ing.unit}</span>
-      ${ing.description}
+      <span class="recipe__unit">${ing}</span>
     </div>
   </li>`;
   }
   _generateMarkup() {
+    console.log('data incoming');
+    console.log(this._data);
+    // console.log(this._data.ingredients);
+    let loop = this._data.ingredients
+      .map(ingr => {
+        return this._generateMarkupIngredient(ingr);
+      })
+      .join('');
     return `<figure class="recipe__fig">
     <img src=${this._data.image} alt=${this._data.title} class="recipe__img" />
     <h1 class="recipe__title">
@@ -44,37 +48,6 @@ class RecipeView extends View {
   </figure>
 
   <div class="recipe__details">
-    <div class="recipe__info">
-      <svg class="recipe__info-icon">
-        <use href="${icons}#icon-clock"></use>
-      </svg>
-      <span class="recipe__info-data recipe__info-data--minutes">${
-        this._data.cookingTime
-      }</span>
-      <span class="recipe__info-text">minutes</span>
-    </div>
-    <div class="recipe__info">
-      <svg class="recipe__info-icon">
-        <use href="${icons}#icon-users"></use>
-      </svg>
-      <span class="recipe__info-data recipe__info-data--people">${
-        this._data.servings
-      }</span>
-      <span class="recipe__info-text">servings</span>
-
-      <div class="recipe__info-buttons">
-        <button class="btn--tiny btn--increase-servings">
-          <svg>
-            <use href="${icons}#icon-minus-circle"></use>
-          </svg>
-        </button>
-        <button class="btn--tiny btn--increase-servings">
-          <svg>
-            <use href="${icons}#icon-plus-circle"></use>
-          </svg>
-        </button>
-      </div>
-    </div>
     
     <div class="recipe__user-generated">
       <svg>
@@ -92,7 +65,7 @@ class RecipeView extends View {
   <div class="recipe__ingredients">
     <h2 class="heading--2">Recipe ingredients</h2>
     <ul class="recipe__ingredient-list">
-      ${this._data.ingredients.map(this._generateMarkupIngredient).join('')}
+      ${loop}
      
     </ul>
   </div>
@@ -101,14 +74,12 @@ class RecipeView extends View {
     <h2 class="heading--2">How to cook it</h2>
     <p class="recipe__directions-text">
       This recipe was carefully designed and tested by
-      <span class="recipe__publisher">${
-        this._data.publisher
-      }</span>. Please check out
+      <span class="recipe__publisher">${this._data.publisher}</span>. Please check out
       directions at their website.
     </p>
     <a
       class="btn--small recipe__btn"
-      href="${this._data.sourceUrl}"
+      href="${this._data.id}" //! was soucrURL
       target="_blank"
     >
       <span>Directions</span>

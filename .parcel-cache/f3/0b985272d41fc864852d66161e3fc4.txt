@@ -43,7 +43,7 @@
 70C:\Users\jason\Desktop\myforkify\node_modules\is-typedarray\LICENSE.md130461232830000000 0
 70C:\Users\jason\Desktop\myforkify\node_modules\escalade\sync\index.d.ts121436361000000000 0
 106C:\Users\jason\Desktop\myforkify\node_modules\css-declaration-sorter\node_modules\postcss\lib\stringify.js121436361000000000 0
-53C:\Users\jason\Desktop\myforkify\src\js\controller.js132700210531610339 0
+53C:\Users\jason\Desktop\myforkify\src\js\controller.js132701886972759505 0
 65C:\Users\jason\Desktop\myforkify\node_modules\path-parse\index.js121436361000000000 0
 82C:\Users\jason\Desktop\myforkify\node_modules\uri-js\dist\esnext\schemes\ws.js.map121436361000000000 0
 102C:\Users\jason\Desktop\myforkify\node_modules\jsdom\lib\jsdom\living\nodes\HTMLOptGroupElement-impl.js121436361000000000 0
@@ -58,7 +58,7 @@
 71C:\Users\jason\Desktop\myforkify\node_modules\json-source-map\README.md121436361000000000 0
 57C:\Users\jason\Desktop\myforkify\node_modules\randombytes132693818747828527 1
 62C:\Users\jason\Desktop\myforkify\node_modules\node-abi\LICENSE121436361000000000 0
-37C:\Users\jason\Desktop\myforkify\dist132700210439151133 1
+37C:\Users\jason\Desktop\myforkify\dist132701905437909314 1
 95C:\Users\jason\Desktop\myforkify\node_modules\postcss-selector-parser\dist\selectors\nesting.js121436361000000000 0
 55C:\Users\jason\Desktop\myforkify\node_modules\is-number132693818876806184 1
 63C:\Users\jason\Desktop\myforkify\node_modules\vendors\readme.md121436361000000000 0
@@ -79,7 +79,7 @@
 78C:\Users\jason\Desktop\myforkify\node_modules\http-proxy\lib\http-proxy\passes132693817927783701 1
 56C:\Users\jason\Desktop\myforkify\node_modules\parse-json132693818855524963 1
 60C:\Users\jason\Desktop\myforkify\node_modules\.bin\uncss.ps1132693818974760895 0
-59C:\Users\jason\Desktop\myforkify\src\js\views\recipeView.js132700210412439899 0
+59C:\Users\jason\Desktop\myforkify\src\js\views\recipeView.js132701905430017529 0
 86C:\Users\jason\Desktop\myforkify\node_modules\@babel\helper-function-name\lib\index.js121012626000000000 0
 96C:\Users\jason\Desktop\myforkify\node_modules\postcss-svgo\node_modules\postcss\lib\container.js121436361000000000 0
 78C:\Users\jason\Desktop\myforkify\node_modules\js-yaml\lib\js-yaml\exception.js121436361000000000 0
@@ -136,7 +136,7 @@
 63C:\Users\jason\Desktop\myforkify\node_modules\relateurl\license130868440720000000 0
 66C:\Users\jason\Desktop\myforkify\node_modules\lodash\stubString.js121436361000000000 0
 117C:\Users\jason\Desktop\myforkify\node_modules\postcss-colormin\node_modules\chalk\node_modules\supports-color\license131408182550000000 0
-43C:\Users\jason\Desktop\myforkify\index.html132700190908789693 0
+43C:\Users\jason\Desktop\myforkify\index.html132701614693739005 0
 104C:\Users\jason\Desktop\myforkify\node_modules\postcss-normalize-charset\node_modules\postcss\lib\root.js121436361000000000 0
 61C:\Users\jason\Desktop\myforkify\node_modules\is-obj\index.js121436361000000000 0
 84C:\Users\jason\Desktop\myforkify\node_modules\es-abstract\2019\IsConcatSpreadable.js121436361000000000 0
@@ -215,7 +215,7 @@
 84C:\Users\jason\Desktop\myforkify\node_modules\core-js\internals\array-copy-within.js121436361000000000 0
 90C:\Users\jason\Desktop\myforkify\node_modules\core-js\modules\esnext.number.from-string.js121436361000000000 0
 52C:\Users\jason\Desktop\myforkify\node_modules\md5.js132693818640578927 1
-39C:\Users\jason\Desktop\myforkify\src\js132696325578327669 1
+39C:\Users\jason\Desktop\myforkify\src\js132701597704106215 1
 60C:\Users\jason\Desktop\myforkify\node_modules\is-interactive132693818876247660 1
 101C:\Users\jason\Desktop\myforkify\node_modules\postcss-normalize-url\node_modules\postcss\lib\parse.js121436361000000000 0
 103C:\Users\jason\Desktop\myforkify\node_modules\postcss-minify-gradients\node_modules\ansi-styles\license131408182550000000 0
@@ -271,7 +271,7 @@
 59C:\Users\jason\Desktop\myforkify\node_modules\ejs\README.md132186645850000000 0
 55C:\Users\jason\Desktop\myforkify\src\sass\_preview.scss132693983699670266 0
 94C:\Users\jason\Desktop\myforkify\node_modules\readable-stream\lib\internal\streams\pipeline.js121436361000000000 0
-48C:\Users\jason\Desktop\myforkify\src\js\model.js132700135160417258 0
+48C:\Users\jason\Desktop\myforkify\src\js\model.js132701887523362080 0
 76C:\Users\jason\Desktop\myforkify\node_modules\core-js\es\instance\entries.js121436361000000000 0
 58C:\Users\jason\Desktop\myforkify\src\sass\_components.scss132562249780000000 0
 76C:\Users\jason\Desktop\myforkify\node_modules\es-abstract\helpers\forEach.js121436361000000000 0
@@ -295,7 +295,7 @@
 70C:\Users\jason\Desktop\myforkify\node_modules\cssnano-util-same-parent132693818927481737 1
 67C:\Users\jason\Desktop\myforkify\node_modules\create-ecdh\readme.md121436361000000000 0
 78C:\Users\jason\Desktop\myforkify\node_modules\core-js\stable\object\entries.js121436361000000000 0
-53C:\Users\jason\Desktop\myforkify\src\js\views\View.js132700210431620263 0
+53C:\Users\jason\Desktop\myforkify\src\js\views\View.js132701482279718668 0
 90C:\Users\jason\Desktop\myforkify\node_modules\postcss-svgo\node_modules\color-name\test.js131446304190000000 0
 52C:\Users\jason\Desktop\myforkify\node_modules\pbkdf2132693818635688671 1
 92C:\Users\jason\Desktop\myforkify\node_modules\postcss-selector-parser\dist\__tests__\node.js121436361000000000 0
@@ -356,7 +356,7 @@
 68C:\Users\jason\Desktop\myforkify\node_modules\w3c-hr-time\LICENSE.md132279277550000000 0
 61C:\Users\jason\Desktop\myforkify\node_modules\getpass\LICENSE131376371950000000 0
 52C:\Users\jason\Desktop\myforkify\src\img\favicon.png132562249780000000 0
-49C:\Users\jason\Desktop\myforkify\src\js\config.js132699757095779974 0
+49C:\Users\jason\Desktop\myforkify\src\js\config.js132701611896465461 0
 105C:\Users\jason\Desktop\myforkify\node_modules\postcss-normalize-string\node_modules\color-name\.npmignore130800019150000000 0
 54C:\Users\jason\Desktop\myforkify\node_modules\argparse132693818719797386 1
 97C:\Users\jason\Desktop\myforkify\node_modules\css-modules-loader-core\node_modules\chalk\index.js131036840410000000 0
@@ -382,7 +382,7 @@
 81C:\Users\jason\Desktop\myforkify\node_modules\@babel\plugin-transform-modules-amd132693818661388637 1
 71C:\Users\jason\Desktop\myforkify\node_modules\array-unique\package.json132693818950845769 0
 98C:\Users\jason\Desktop\myforkify\node_modules\postcss-reduce-transforms\node_modules\color-convert132693818765486703 1
-45C:\Users\jason\Desktop\myforkify\src\js\views132700150486729367 1
+45C:\Users\jason\Desktop\myforkify\src\js\views132701597704086265 1
 100C:\Users\jason\Desktop\myforkify\node_modules\postcss-colormin\node_modules\postcss-value-parser\lib132693818029022490 1
 81C:\Users\jason\Desktop\myforkify\node_modules\uri-js\dist\esnext\schemes\wss.d.ts121436361000000000 0
 57C:\Users\jason\Desktop\myforkify\node_modules\asn1.js\lib132693817854093277 1
@@ -393,7 +393,7 @@
 97C:\Users\jason\Desktop\myforkify\node_modules\simple-get\node_modules\decompress-response\license121436361000000000 0
 73C:\Users\jason\Desktop\myforkify\node_modules\xmlchars\xml\1.1\ed2.js.map121436361000000000 0
 82C:\Users\jason\Desktop\myforkify\node_modules\highlight.js\styles\color-brewer.css121436361000000000 0
-60C:\Users\jason\Desktop\myforkify\src\js\views\resultsView.js132700210489676903 0
+60C:\Users\jason\Desktop\myforkify\src\js\views\resultsView.js132701805805873906 0
 108C:\Users\jason\Desktop\myforkify\node_modules\@parcel\reporter-dev-server\node_modules\ws\lib\buffer-util.js121436361000000000 0
 68C:\Users\jason\Desktop\myforkify\node_modules\randombytes\browser.js121436361000000000 0
 52C:\Users\jason\Desktop\myforkify\node_modules\unpipe132693818644048087 1
@@ -419,7 +419,7 @@
 88C:\Users\jason\Desktop\myforkify\node_modules\svgo\node_modules\ansi-styles\package.json132693818713029819 0
 86C:\Users\jason\Desktop\myforkify\node_modules\postcss-modules\node_modules\ansi-styles132693818820918866 1
 112C:\Users\jason\Desktop\myforkify\node_modules\postcss-normalize-timing-functions\node_modules\chalk\node_modules132693818413756673 1
-59C:\Users\jason\Desktop\myforkify\src\js\views\searchView.js132700210392599126 0
+59C:\Users\jason\Desktop\myforkify\src\js\views\searchView.js132700211330913595 0
 88C:\Users\jason\Desktop\myforkify\node_modules\core-js\features\array\virtual\iterator.js121436361000000000 0
 86C:\Users\jason\Desktop\myforkify\node_modules\@babel\generator\lib\generators\index.js121012626000000000 0
 113C:\Users\jason\Desktop\myforkify\node_modules\@parcel\transformer-html\node_modules\dom-serializer\lib\index.d.ts121436361000000000 0
@@ -8021,7 +8021,7 @@
 85C:\Users\jason\Desktop\myforkify\node_modules\resolve\test\resolver\dot_main\index.js121436361000000000 0
 69C:\Users\jason\Desktop\myforkify\node_modules\react-refresh\README.md121436361000000000 0
 79C:\Users\jason\Desktop\myforkify\node_modules\highlight.js\lib\languages\sqf.js121436361000000000 0
-56C:\Users\jason\Desktop\myforkify\dist\index.1206e35b.css132700198856827059 0
+56C:\Users\jason\Desktop\myforkify\dist\index.1206e35b.css132701901947040204 0
 98C:\Users\jason\Desktop\myforkify\node_modules\@babel\plugin-transform-unicode-escapes\package.json132693818957109723 0
 86C:\Users\jason\Desktop\myforkify\node_modules\resolve\test\resolver\browser_field\a.js121436361000000000 0
 73C:\Users\jason\Desktop\myforkify\node_modules\node-forge\lib\pkcs7asn1.js121436361000000000 0
@@ -12604,7 +12604,7 @@
 64C:\Users\jason\Desktop\myforkify\node_modules\picomatch\index.js121436361000000000 0
 90C:\Users\jason\Desktop\myforkify\node_modules\@babel\plugin-proposal-optional-chaining\lib132693817707714879 1
 68C:\Users\jason\Desktop\myforkify\node_modules\picomatch\package.json132693818849378500 0
-55C:\Users\jason\Desktop\myforkify\dist\index.250b04c7.js132700210439051045 0
+55C:\Users\jason\Desktop\myforkify\dist\index.250b04c7.js132701905437799610 0
 72C:\Users\jason\Desktop\myforkify\node_modules\picomatch\lib\picomatch.js121436361000000000 0
 73C:\Users\jason\Desktop\myforkify\node_modules\@parcel\reporter-dev-server132693818617265564 1
 65C:\Users\jason\Desktop\myforkify\node_modules\performance-now\lib132693818029690700 1
@@ -17645,7 +17645,7 @@
 73C:\Users\jason\Desktop\myforkify\node_modules\css-tree\lib\lexer\trace.js121436361000000000 0
 78C:\Users\jason\Desktop\myforkify\node_modules\css-tree\lib\generator\create.js121436361000000000 0
 77C:\Users\jason\Desktop\myforkify\node_modules\css-tree\lib\generator\index.js121436361000000000 0
-58C:\Users\jason\Desktop\myforkify\dist\favicon.98e27482.png132700210436055098 0
+58C:\Users\jason\Desktop\myforkify\dist\favicon.98e27482.png132701905434126718 0
 88C:\Users\jason\Desktop\myforkify\node_modules\css-tree\lib\definition-syntax\generate.js121436361000000000 0
 91C:\Users\jason\Desktop\myforkify\node_modules\css-tree\lib\definition-syntax\SyntaxError.js121436361000000000 0
 81C:\Users\jason\Desktop\myforkify\node_modules\css-tree\lib\common\adopt-buffer.js121436361000000000 0
@@ -20428,7 +20428,7 @@
 114C:\Users\jason\Desktop\myforkify\node_modules\@parcel\transformer-html\node_modules\posthtml-parser\.idea\misc.xml121436361000000000 0
 117C:\Users\jason\Desktop\myforkify\node_modules\@parcel\transformer-html\node_modules\posthtml-parser\.idea\modules.xml121436361000000000 0
 125C:\Users\jason\Desktop\myforkify\node_modules\@parcel\transformer-html\node_modules\posthtml-parser\.idea\posthtml-parser.iml121436361000000000 0
-56C:\Users\jason\Desktop\myforkify\dist\icons.d4a14980.svg132700210436055098 0
+56C:\Users\jason\Desktop\myforkify\dist\icons.d4a14980.svg132701905434126718 0
 113C:\Users\jason\Desktop\myforkify\node_modules\@parcel\transformer-html\node_modules\posthtml-parser\.idea\vcs.xml121436361000000000 0
 136C:\Users\jason\Desktop\myforkify\node_modules\@parcel\transformer-html\node_modules\posthtml-parser\.idea\codeStyles\codeStyleConfig.xml121436361000000000 0
 94C:\Users\jason\Desktop\myforkify\node_modules\@babel\runtime\helpers\skipFirstGeneratorNext.js121012626000000000 0
@@ -20715,7 +20715,7 @@
 76C:\Users\jason\Desktop\myforkify\node_modules\@parcel\node-resolver-core\src132693817812820002 1
 77C:\Users\jason\Desktop\myforkify\node_modules\@parcel\node-resolver-core\test132693817814196323 1
 85C:\Users\jason\Desktop\myforkify\node_modules\@parcel\node-resolver-core\test\fixture132693817900760027 1
-48C:\Users\jason\Desktop\myforkify\dist\index.html132700196448196936 0
+48C:\Users\jason\Desktop\myforkify\dist\index.html132701899619679490 0
 89C:\Users\jason\Desktop\myforkify\node_modules\@parcel\node-resolver-core\test\resolver.js121436361000000000 0
 92C:\Users\jason\Desktop\myforkify\node_modules\@parcel\node-resolver-core\test\fixture\foo.js121436361000000000 0
 92C:\Users\jason\Desktop\myforkify\node_modules\@parcel\node-resolver-core\test\fixture\nested132693817830618480 1
@@ -21900,7 +21900,7 @@
 65C:\Users\jason\Desktop\myforkify\node_modules\.bin\esgenerate.ps1132693818973843329 0
 62C:\Users\jason\Desktop\myforkify\node_modules\.bin\esparse.ps1132693818966882956 0
 61C:\Users\jason\Desktop\myforkify\node_modules\.bin\esvalidate132693818966882956 0
-55C:\Users\jason\Desktop\myforkify\dist\logo.e2e2f3a5.png132700210436753172 0
+55C:\Users\jason\Desktop\myforkify\dist\logo.e2e2f3a5.png132701905434176692 0
 65C:\Users\jason\Desktop\myforkify\node_modules\.bin\esvalidate.ps1132693818966882956 0
 64C:\Users\jason\Desktop\myforkify\node_modules\.bin\is-docker.ps1132693818967521258 0
 58C:\Users\jason\Desktop\myforkify\node_modules\.bin\js-yaml132693818971509629 0
@@ -21949,10 +21949,10 @@
 60C:\Users\jason\Desktop\myforkify\node_modules\.bin\which.ps1132693818973454377 0
 60C:\Users\jason\Desktop\myforkify\dist\controller.4988cb5e.js132696536505227770 0
 64C:\Users\jason\Desktop\myforkify\dist\controller.4988cb5e.js.map132696536505327509 0
-56C:\Users\jason\Desktop\myforkify\dist\icons.c4b52749.svg132700210436753172 0
-60C:\Users\jason\Desktop\myforkify\dist\index.1206e35b.css.map132700210439124048 0
-59C:\Users\jason\Desktop\myforkify\dist\index.250b04c7.js.map132700210439142857 0
+56C:\Users\jason\Desktop\myforkify\dist\icons.c4b52749.svg132701905433907299 0
+60C:\Users\jason\Desktop\myforkify\dist\index.1206e35b.css.map132701905437859440 0
+59C:\Users\jason\Desktop\myforkify\dist\index.250b04c7.js.map132701905437899382 0
 56C:\Users\jason\Desktop\myforkify\dist\index.aabd0325.css132693820999430181 0
-55C:\Users\jason\Desktop\myforkify\dist\logo.5d271741.png132700210436761607 0
+55C:\Users\jason\Desktop\myforkify\dist\logo.5d271741.png132701905433907299 0
 54C:\Users\jason\Desktop\myforkify\compiled_css\main.css132693178872308830 0
 58C:\Users\jason\Desktop\myforkify\compiled_css\main.css.map132693178872418542 0

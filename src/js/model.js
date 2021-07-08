@@ -22,7 +22,7 @@ export const loadSearchResults = async function (searchFieldInput) {
     const { recipes } = searchResults;
     const reformattedResults = recipes.map(rec => {
       return {
-        id: rec.id,
+        id: rec.recipe_id,
         title: rec.title,
         publisher: rec.publisher,
         sourceUrl: rec.source_url,
@@ -40,19 +40,23 @@ export const loadRecipe = async function (id) {
   // this function only changes the state object (DN return anything)
   try {
     // Store resolved fetchAPI promise value from getJSON() into "data"
-    const data = await getJSON(`${API_URL}/${id}`);
+    const data = await getJSON(`${API_URL}${id}`);
+    console.log(`${API_URL}${id}`); // link to the JSON data
+    // console.log('raw parsed JSON incoming');
+    // console.log(data);
     // Reformat the info captured from our fetch request so the names are simpler
-    const { recipe } = data.data;
+    const { recipe } = data;
     state.recipe = {
-      id: recipe.id,
+      id: recipe.recipe_id,
       title: recipe.title,
       publisher: recipe.publisher,
       sourceUrl: recipe.source_url,
       image: recipe.image_url,
-      servings: recipe.servings,
+      servings: recipe.servings, //! not always there
       cookingTime: recipe.cooking_time,
-      ingredients: recipe.ingredients,
+      ingredients: recipe.ingredients, //! an array
     };
+    // console.log('state object recipe incoming');
     // console.log(state.recipe);
   } catch (err) {
     throw err;

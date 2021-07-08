@@ -3,16 +3,19 @@ import icons from 'url:../../img/icons.svg';
 export default class View {
   //~ The child classes will define these variables up top
   //~ each child's variable values will differ (diff parent elements for example)
-  /* CHILD-SPECIFIC VARIABLES
-  _data;
-  _parentElement = document.querySelector('.recipe'); // recipeContainer fr/ controller
-  _data; // the data originally from model goes here (usable file-wide, now)
-  _errorMSG = `Could not find this recipe. Please try again`;
-  _message = ''; 
+  /* CHILD-SPECIFIC VARIABLES FOR CHILD CLASSES OF View
+
+  _data;  (data from model's fetchAPI call, passed to view via the controller)
+  _parentElement = (most of our methods will be applied to this parent block)
+  _data;  (the data originally from model, passed to view via controller)
+  _errorMSG = (depends on element that its applied to)
+  _message = (successMSG)
   */
   //—————————————————————【】——————————————————————————
+
   render(data) {
-    this._data = data;
+    this._data = data; 
+    // Set data variable equal to the info we pass in as an arg (info came from model=>controller)
     const markup = this._generateMarkup();
     this._clear();
     this._parentElement.insertAdjacentHTML('afterbegin', markup);

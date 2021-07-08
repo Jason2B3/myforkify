@@ -466,6 +466,7 @@ const timeout = function (s) {
 const controlRecipes = async function () {
   try {
     const id = window.location.hash.slice(1);
+    // console.log(window.location.hash);
     if (!id) return;
     // guard clause if we have no ID
     _viewsRecipeViewJsDefault.default.renderSpinner();
@@ -494,9 +495,10 @@ const controlSearchResults = async function () {
     // 2) Load search results
     await _modelJs.loadSearchResults(sq);
     // load search results
-    console.log(_modelJs.state.search);
+    // 3) Render results
+    _viewsResultsViewJsDefault.default.render(_modelJs.state.search.results);
   } catch (err) {
-    _viewsResultsViewJsDefault.default.renderError();
+    _viewsResultsViewJsDefault.default.renderError(_modelJs.state.search.results);
   }
 };
 // % MVC Version of PubSub PART 1 and 2
@@ -13038,7 +13040,7 @@ const loadSearchResults = async function (searchFieldInput) {
     const {recipes} = searchResults;
     const reformattedResults = recipes.map(rec => {
       return {
-        id: rec.id,
+        id: rec.recipe_id,
         title: rec.title,
         publisher: rec.publisher,
         sourceUrl: rec.source_url,
@@ -13054,16 +13056,21 @@ const loadRecipe = async function (id) {
   // this function only changes the state object (DN return anything)
   try {
     // Store resolved fetchAPI promise value from getJSON() into "data"
-    const data = await _helpersJs.getJSON(`${_configJs.API_URL}/${id}`);
+    const data = await _helpersJs.getJSON(`${_configJs.API_URL}${id}`);
+    console.log(`${_configJs.API_URL}${id}`);
+    // link to the JSON data
+    // console.log('raw parsed JSON incoming');
+    // console.log(data);
     // Reformat the info captured from our fetch request so the names are simpler
-    const {recipe} = data.data;
+    const {recipe} = data;
     state.recipe = {
-      id: recipe.id,
+      id: recipe.recipe_id,
       title: recipe.title,
       publisher: recipe.publisher,
       sourceUrl: recipe.source_url,
       image: recipe.image_url,
       servings: recipe.servings,
+      // ! not always there
       cookingTime: recipe.cooking_time,
       ingredients: recipe.ingredients
     };
@@ -13081,7 +13088,7 @@ _parcelHelpers.export(exports, "API_URL", function () {
 _parcelHelpers.export(exports, "TIMEOUT_SEC", function () {
   return TIMEOUT_SEC;
 });
-const API_URL = 'https://forkify-api.herokuapp.com/api/v2/recipes';
+const API_URL = 'https://forkify-api.herokuapp.com/api/get?rId=';
 const TIMEOUT_SEC = 10;
 
 },{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"581KF":[function(require,module,exports) {
@@ -13125,7 +13132,7 @@ class RecipeView extends _ViewJsDefault.default {
   // recipeContainer fr/ controller
   _data;
   // the data originally from model goes here (usable file-wide, now)
-  _errorMSG = `Could not find this recipe. Please try again`;
+  _errorMSG = `Operations may have failed in the model.js loadRecipe ƒ()`;
   _message = '';
   // ! set your success message later!!
   // —————————————————————【 UNIQUE METHODS 】——————————————————————————
@@ -13141,14 +13148,18 @@ class RecipeView extends _ViewJsDefault.default {
     <svg class="recipe__icon">
       <use href="${_urlImgIconsSvgDefault.default}#icon-check"></use>
     </svg>
-    <div class="recipe__quantity">${ing.quantity ? new Fraction(ing.quantity).toString() : ''}</div>
     <div class="recipe__description">
-      <span class="recipe__unit">${ing.unit}</span>
-      ${ing.description}
+      <span class="recipe__unit">${ing}</span>
     </div>
   </li>`;
   }
   _generateMarkup() {
+    console.log('data incoming');
+    console.log(this._data);
+    // console.log(this._data.ingredients);
+    let loop = this._data.ingredients.map(ingr => {
+      return this._generateMarkupIngredient(ingr);
+    }).join('');
     return `<figure class="recipe__fig">
     <img src=${this._data.image} alt=${this._data.title} class="recipe__img" />
     <h1 class="recipe__title">
@@ -13157,33 +13168,6 @@ class RecipeView extends _ViewJsDefault.default {
   </figure>
 
   <div class="recipe__details">
-    <div class="recipe__info">
-      <svg class="recipe__info-icon">
-        <use href="${_urlImgIconsSvgDefault.default}#icon-clock"></use>
-      </svg>
-      <span class="recipe__info-data recipe__info-data--minutes">${this._data.cookingTime}</span>
-      <span class="recipe__info-text">minutes</span>
-    </div>
-    <div class="recipe__info">
-      <svg class="recipe__info-icon">
-        <use href="${_urlImgIconsSvgDefault.default}#icon-users"></use>
-      </svg>
-      <span class="recipe__info-data recipe__info-data--people">${this._data.servings}</span>
-      <span class="recipe__info-text">servings</span>
-
-      <div class="recipe__info-buttons">
-        <button class="btn--tiny btn--increase-servings">
-          <svg>
-            <use href="${_urlImgIconsSvgDefault.default}#icon-minus-circle"></use>
-          </svg>
-        </button>
-        <button class="btn--tiny btn--increase-servings">
-          <svg>
-            <use href="${_urlImgIconsSvgDefault.default}#icon-plus-circle"></use>
-          </svg>
-        </button>
-      </div>
-    </div>
     
     <div class="recipe__user-generated">
       <svg>
@@ -13201,7 +13185,7 @@ class RecipeView extends _ViewJsDefault.default {
   <div class="recipe__ingredients">
     <h2 class="heading--2">Recipe ingredients</h2>
     <ul class="recipe__ingredient-list">
-      ${this._data.ingredients.map(this._generateMarkupIngredient).join('')}
+      ${loop}
      
     </ul>
   </div>
@@ -13215,7 +13199,7 @@ class RecipeView extends _ViewJsDefault.default {
     </p>
     <a
       class="btn--small recipe__btn"
-      href="${this._data.sourceUrl}"
+      href="${this._data.id}" //! was soucrURL
       target="_blank"
     >
       <span>Directions</span>
@@ -13657,16 +13641,18 @@ var _urlImgIconsSvgDefault = _parcelHelpers.interopDefault(_urlImgIconsSvg);
 class View {
   // ~ The child classes will define these variables up top
   // ~ each child's variable values will differ (diff parent elements for example)
-  /*CHILD-SPECIFIC VARIABLES
-  _data;
-  _parentElement = document.querySelector('.recipe'); // recipeContainer fr/ controller
-  _data; // the data originally from model goes here (usable file-wide, now)
-  _errorMSG = `Could not find this recipe. Please try again`;
-  _message = '';
+  /*CHILD-SPECIFIC VARIABLES FOR CHILD CLASSES OF View
+  
+  _data;  (data from model's fetchAPI call, passed to view via the controller)
+  _parentElement = (most of our methods will be applied to this parent block)
+  _data;  (the data originally from model, passed to view via controller)
+  _errorMSG = (depends on element that its applied to)
+  _message = (successMSG)
   */
   // —————————————————————【】——————————————————————————
   render(data) {
     this._data = data;
+    // Set data variable equal to the info we pass in as an arg (info came from model=>controller)
     const markup = this._generateMarkup();
     this._clear();
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
@@ -13744,12 +13730,36 @@ exports.default = new SearchView();
 },{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"17PYN":[function(require,module,exports) {
 var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
 _parcelHelpers.defineInteropFlag(exports);
-require('url:../../img/icons.svg');
+var _urlImgIconsSvg = require('url:../../img/icons.svg');
+var _urlImgIconsSvgDefault = _parcelHelpers.interopDefault(_urlImgIconsSvg);
 var _ViewJs = require('./View.js');
 var _ViewJsDefault = _parcelHelpers.interopDefault(_ViewJs);
 class resultsView extends _ViewJsDefault.default {
   _parentElement = document.querySelector('.results');
   _errorMSG = `Recipe not found`;
+  _data;
+  _generateMarkup() {
+    // Create several previews- 1 for each recipe we loaded/placed in _data
+    return this._data.map(this._generateMarkupPreview).join('');
+  }
+  _generateMarkupPreview(result) {
+    return `<li class="preview">
+    <a class="preview__link preview__link--active" href="#${result.id}">
+      <figure class="preview__fig">
+        <img src="${result.image}" alt="Test" />
+      </figure>
+      <div class="preview__data">
+        <h4 class="preview__title">${result.title}</h4>
+        <p class="preview__publisher">${result.publisher}</p>
+        <div class="preview__user-generated">
+          <svg>
+            <use href="${_urlImgIconsSvgDefault.default}#icon-user"></use>
+          </svg>
+        </div>
+      </div>
+    </a>
+  </li>`;
+  }
 }
 exports.default = new resultsView();
 

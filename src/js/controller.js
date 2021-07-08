@@ -9,7 +9,6 @@ import 'core-js/stable'; // "enables polyfills"
 import 'regenerator-runtime/runtime'; //"enables polyfills for async JS"
 
 //—————————————————————【 END OF IMPORTS ZONE 】——————————————————————————
-
 const timeout = function (s) {
   return new Promise(function (_, reject) {
     setTimeout(function () {
@@ -23,6 +22,7 @@ const timeout = function (s) {
 const controlRecipes = async function () {
   try {
     const id = window.location.hash.slice(1);
+    // console.log(window.location.hash);
     if (!id) return; // guard clause if we have no ID
     recipeView.renderSpinner();
     //@  Load the recipe (async F which returns a promise)
@@ -30,7 +30,7 @@ const controlRecipes = async function () {
     // it IS async, which returns a promise- so we need await to halt our ƒ()'s execution
     await model.loadRecipe(id);
     //@  Render the recipe
-    recipeView.render(model.state.recipe);
+    recipeView.render(model.state.recipe); //! error here
   } catch (err) {
     //@ ERROR HANDLING PART 2
     // We use functions from view to render the visuals to convey an error
@@ -49,12 +49,11 @@ const controlSearchResults = async function () {
 
     // 2) Load search results
     await model.loadSearchResults(sq); // load search results
-    console.log(model.state.search);
 
     // 3) Render results
-    // coming up soon!
+    ResultsView.render(model.state.search.results); //! test
   } catch (err) {
-    ResultsView.renderError();
+    ResultsView.renderError(model.state.search.results);
   }
 };
 
