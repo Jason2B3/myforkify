@@ -10,7 +10,7 @@ class RecipeView extends View {
   //~ CHILD SPECIFIC VARIABLES:
   _parentElement = document.querySelector('.recipe'); // recipeContainer fr/ controller
   _data; // the data originally from model goes here (usable file-wide, now)
-  _errorMSG = `Operations may have failed in the model.js loadRecipe ƒ()`;
+  _errorMSG = `Data for this recipe could not be rendered! Please try another`;
   _message = ''; //! set your success message later!!
 
   //—————————————————————【 UNIQUE METHODS 】——————————————————————————
@@ -37,7 +37,8 @@ class RecipeView extends View {
     // console.log(this._data.ingredients);
     let loop = this._data.ingredients
       .map(ingr => {
-        return this._generateMarkupIngredient(ingr);
+        if (ingr != '&nbsp' || ingr != '&nbsp;')
+          return this._generateMarkupIngredient(ingr);
       })
       .join('');
     return `<figure class="recipe__fig">

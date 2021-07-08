@@ -1,5 +1,5 @@
 import { async } from 'regenerator-runtime';
-import { API_URL } from './config.js';
+import { API_URL, RES_PER_PAGE } from './config.js';
 import { getJSON } from './helpers.js';
 
 export const state = {
@@ -7,6 +7,8 @@ export const state = {
   search: {
     query: '', // what the user searched
     results: [],
+    page:1, // set page number to 1 by default
+    resultsPerPage: 10
   },
 };
 
@@ -64,3 +66,17 @@ export const loadRecipe = async function (id) {
     // PASSES REJECTED PROMISE TO THE OTHER ASYNC FUNCTION THAT USES loadRecipe()
   }
 };
+
+//% PAGINATION PART 1:
+//% AIM: Only show the first 10 search results in our rendered search list
+//% Introduce a "Page #" button that renders other recipes if pressed
+
+export const getSearchResultsPage= function(page= 1){
+  // Adjust page buttons to a "start at 1" type of count
+  // RES_PER_PAGE is set to 10 in our config file
+  state.search.page=page // save page number in our state obj
+  const start=(page-1)*RES_PER_PAGE;
+  const end=page*RES_PER_PAGE;
+  return state.search.results.slice(start,end)
+}
+

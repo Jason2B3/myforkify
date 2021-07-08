@@ -496,7 +496,7 @@ const controlSearchResults = async function () {
     await _modelJs.loadSearchResults(sq);
     // load search results
     // 3) Render results
-    _viewsResultsViewJsDefault.default.render(_modelJs.state.search.results);
+    _viewsResultsViewJsDefault.default.render(_modelJs.getSearchResultsPage());
   } catch (err) {
     _viewsResultsViewJsDefault.default.renderError(_modelJs.state.search.results);
   }
@@ -13018,6 +13018,9 @@ _parcelHelpers.export(exports, "loadSearchResults", function () {
 _parcelHelpers.export(exports, "loadRecipe", function () {
   return loadRecipe;
 });
+_parcelHelpers.export(exports, "getSearchResultsPage", function () {
+  return getSearchResultsPage;
+});
 require('regenerator-runtime');
 var _configJs = require('./config.js');
 var _helpersJs = require('./helpers.js');
@@ -13026,7 +13029,10 @@ const state = {
   search: {
     query: '',
     // what the user searched
-    results: []
+    results: [],
+    page: 1,
+    // set page number to 1 by default
+    resultsPerPage: 10
   }
 };
 const loadSearchResults = async function (searchFieldInput) {
@@ -13078,6 +13084,15 @@ const loadRecipe = async function (id) {
     throw err;
   }
 };
+const getSearchResultsPage = function (page = 1) {
+  // Adjust page buttons to a "start at 1" type of count
+  // RES_PER_PAGE is set to 10 in our config file
+  state.search.page = page;
+  // save page number in our state obj
+  const start = (page - 1) * _configJs.RES_PER_PAGE;
+  const end = page * _configJs.RES_PER_PAGE;
+  return state.search.results.slice(start, end);
+};
 
 },{"regenerator-runtime":"62Qib","./config.js":"6pr2F","./helpers.js":"581KF","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"6pr2F":[function(require,module,exports) {
 var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
@@ -13088,8 +13103,12 @@ _parcelHelpers.export(exports, "API_URL", function () {
 _parcelHelpers.export(exports, "TIMEOUT_SEC", function () {
   return TIMEOUT_SEC;
 });
+_parcelHelpers.export(exports, "RES_PER_PAGE", function () {
+  return RES_PER_PAGE;
+});
 const API_URL = 'https://forkify-api.herokuapp.com/api/get?rId=';
 const TIMEOUT_SEC = 10;
+const RES_PER_PAGE = 10;
 
 },{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"581KF":[function(require,module,exports) {
 var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
@@ -13132,7 +13151,7 @@ class RecipeView extends _ViewJsDefault.default {
   // recipeContainer fr/ controller
   _data;
   // the data originally from model goes here (usable file-wide, now)
-  _errorMSG = `Operations may have failed in the model.js loadRecipe ƒ()`;
+  _errorMSG = `Data for this recipe could not be rendered! Please try another`;
   _message = '';
   // ! set your success message later!!
   // —————————————————————【 UNIQUE METHODS 】——————————————————————————
@@ -13158,7 +13177,7 @@ class RecipeView extends _ViewJsDefault.default {
     console.log(this._data);
     // console.log(this._data.ingredients);
     let loop = this._data.ingredients.map(ingr => {
-      return this._generateMarkupIngredient(ingr);
+      if (ingr != '&nbsp' || ingr != '&nbsp;') return this._generateMarkupIngredient(ingr);
     }).join('');
     return `<figure class="recipe__fig">
     <img src=${this._data.image} alt=${this._data.title} class="recipe__img" />
@@ -13651,6 +13670,8 @@ class View {
   */
   // —————————————————————【】——————————————————————————
   render(data) {
+    if (!data || Array.isArray(data) && data.length === 0) return this.renderError();
+    // Guard clause in case we retreive no data, OR that data is an empty array
     this._data = data;
     // Set data variable equal to the info we pass in as an arg (info came from model=>controller)
     const markup = this._generateMarkup();
@@ -13736,7 +13757,7 @@ var _ViewJs = require('./View.js');
 var _ViewJsDefault = _parcelHelpers.interopDefault(_ViewJs);
 class resultsView extends _ViewJsDefault.default {
   _parentElement = document.querySelector('.results');
-  _errorMSG = `Recipe not found`;
+  _errorMSG = `No recipes found for your query. Please try again`;
   _data;
   _generateMarkup() {
     // Create several previews- 1 for each recipe we loaded/placed in _data
@@ -13751,11 +13772,13 @@ class resultsView extends _ViewJsDefault.default {
       <div class="preview__data">
         <h4 class="preview__title">${result.title}</h4>
         <p class="preview__publisher">${result.publisher}</p>
+        <!--
         <div class="preview__user-generated">
           <svg>
             <use href="${_urlImgIconsSvgDefault.default}#icon-user"></use>
           </svg>
         </div>
+        -->
       </div>
     </a>
   </li>`;

@@ -14,7 +14,10 @@ export default class View {
   //—————————————————————【】——————————————————————————
 
   render(data) {
-    this._data = data; 
+    if (!data || (Array.isArray(data) && data.length === 0))
+      return this.renderError();
+      // Guard clause in case we retreive no data, OR that data is an empty array
+    this._data = data;
     // Set data variable equal to the info we pass in as an arg (info came from model=>controller)
     const markup = this._generateMarkup();
     this._clear();

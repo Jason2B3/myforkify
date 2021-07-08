@@ -3,7 +3,7 @@ import View from './View.js';
 
 class resultsView extends View {
   _parentElement = document.querySelector('.results');
-  _errorMSG = `Recipe not found`;
+  _errorMSG = `No recipes found for your query. Please try again`;
   _data;
   _generateMarkup() {
     // Create several previews- 1 for each recipe we loaded/placed in _data
@@ -18,11 +18,13 @@ class resultsView extends View {
       <div class="preview__data">
         <h4 class="preview__title">${result.title}</h4>
         <p class="preview__publisher">${result.publisher}</p>
+        <!--
         <div class="preview__user-generated">
           <svg>
             <use href="${icons}#icon-user"></use>
           </svg>
         </div>
+        -->
       </div>
     </a>
   </li>`;
