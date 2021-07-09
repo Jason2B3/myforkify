@@ -29,11 +29,9 @@ export default class View {
     // add your markup which is pre-styled in SASS
   }
   update(data) {
-    this._data = data;
+    this._data = data; // update class data variable
     // Set data variable equal to the info we pass in as an arg (info came from model=>controller)
     const newMarkup = this._generateMarkup();
-    //———————————【everything above is identical to render()】————————————————
-
     const newDOM = document.createRange().createContextualFragment(newMarkup);
     // Capture all elements within the current HTML container and the one about 2Brendered
     // conv nodelists into arrays with Array.from(), you can loop over them ATST
@@ -53,7 +51,7 @@ export default class View {
       // 2) Updates changed ATTRIBUTES
       // We change the old attributes with the new ones
       if (!newEl.isEqualNode(curEl)) {
-        console.log(newEl.attribute); // logs attributes of all EL's that have changed
+        // console.log(newEl.attribute); // logs attributes of all EL's that have changed
         Array.from(newEl.attributes).forEach(attr =>
           curEl.setAttribute(attr.name, attr.value)
         );

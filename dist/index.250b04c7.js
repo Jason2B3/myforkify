@@ -517,8 +517,7 @@ const controlPagination = function (goToPage) {
 };
 const controlAddBookmark = function () {
   _modelJs.addBookmark(_modelJs.state.recipe);
-  console.log('State recipe object incoming, post bookmark press: from C/');
-  console.log(_modelJs.state.recipe);
+  _viewsRecipeViewJsDefault.default.update(_modelJs.state.recipe);
 };
 // @ This is the MVC Version of Pub-Sub
 const init = function () {
@@ -13057,8 +13056,7 @@ const state = {
     // set page number to 1 by default
     resultsPerPage: 10
   },
-  bookmarks: [],
-  bookmarked: false
+  bookmarks: []
 };
 const loadSearchResults = async function (searchFieldInput) {
   // MAIN OBJECTIVE: Change state object with your search results
@@ -13100,11 +13098,12 @@ const loadRecipe = async function (id) {
       publisher: recipe.publisher,
       sourceUrl: recipe.source_url,
       image: recipe.image_url,
-      servings: recipe.servings,
-      // not always there
-      cookingTime: recipe.cooking_time,
       ingredients: recipe.ingredients
     };
+    // Check if the state object's bookmark array contains the ID of the recipe you supply this function
+    // Set the "bookmarked" KVP equal to true or false accordingly
+    if (state.bookmarks.includes(id)) state.recipe.bookmarked = true; else state.recipe.bookmarked = false;
+    console.log(`MODEL state obj:`, state);
   } catch (err) {
     throw err;
   }
@@ -13119,9 +13118,9 @@ const getSearchResultsPage = function (page = state.search.page) {
   return state.search.results.slice(start, end);
 };
 const addBookmark = function (recipe) {
-  // Add bookmark to the state object's array of them
-  state.bookmarks.push(recipe);
-  // Mark current recipe as bookmark (adds white to the bookmark icon)
+  // Add recipe ID to the state object's bookmark list/array
+  state.bookmarks.push(recipe.id);
+  // Mark current recipe as bookmarked (adds white to the bookmark icon)
   if (recipe.id === state.recipe.id) state.recipe.bookmarked = true;
 };
 
@@ -13195,8 +13194,7 @@ class RecipeView extends _ViewJsDefault.default {
   }
   addHandlerBookmark(handler) {
     this._parentElement.addEventListener('click', function (e) {
-      e.preventDefault();
-      // ! testing
+      // e.preventDefault(); //! testing
       const btn = e.target.closest('.btn--bookmark');
       if (!btn) return;
       handler();
@@ -13213,9 +13211,13 @@ class RecipeView extends _ViewJsDefault.default {
   </li>`;
   }
   _generateMarkup() {
+    // Generate the text for each ingredient
     let loop = this._data.ingredients.map(ingr => {
       if (ingr != '&nbsp' || ingr != '&nbsp;') return this._generateMarkupIngredient(ingr);
     }).join('');
+    // Determine whether to fill in the bookmark icon or not
+    let bookmarkHTML;
+    if (this._data.bookmarked === true) bookmarkHTML = '#icon-bookmark-fill'; else bookmarkHTML = '#icon-bookmark';
     return `<figure class="recipe__fig">
     <img src=${this._data.image} alt=${this._data.title} class="recipe__img" />
     <h1 class="recipe__title">
@@ -13233,7 +13235,7 @@ class RecipeView extends _ViewJsDefault.default {
     
     <button class="btn--round btn--bookmark">
       <svg class="">
-        <use href="${_urlImgIconsSvgDefault.default}#icon-bookmark${this._data.bookmarked ? '-fill' : ''}"></use>
+        <use href="${_urlImgIconsSvgDefault.default}${bookmarkHTML}"></use>
       </svg>
     </button>
 
@@ -13722,9 +13724,9 @@ class View {
   }
   update(data) {
     this._data = data;
+    // update class data variable
     // Set data variable equal to the info we pass in as an arg (info came from model=>controller)
     const newMarkup = this._generateMarkup();
-    // ———————————【everything above is identical to render()】————————————————
     const newDOM = document.createRange().createContextualFragment(newMarkup);
     // Capture all elements within the current HTML container and the one about 2Brendered
     // conv nodelists into arrays with Array.from(), you can loop over them ATST
@@ -13740,8 +13742,7 @@ class View {
       // 2) Updates changed ATTRIBUTES
       // We change the old attributes with the new ones
       if (!newEl.isEqualNode(curEl)) {
-        console.log(newEl.attribute);
-        // logs attributes of all EL's that have changed
+        // console.log(newEl.attribute); // logs attributes of all EL's that have changed
         Array.from(newEl.attributes).forEach(attr => curEl.setAttribute(attr.name, attr.value));
       }
     });

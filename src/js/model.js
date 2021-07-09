@@ -11,7 +11,6 @@ export const state = {
     resultsPerPage: 10,
   },
   bookmarks: [],
-  bookmarked: false, // the default 
 };
 
 export const loadSearchResults = async function (searchFieldInput) {
@@ -34,7 +33,7 @@ export const loadSearchResults = async function (searchFieldInput) {
         image: rec.image_url,
       };
     });
-    state.search.results = reformattedResults; //$ update state obj
+    state.search.results = reformattedResults; //$ update state obj results array
   } catch (err) {
     throw err;
     // want to handle errors in the controller catch block using view methods
@@ -56,10 +55,13 @@ export const loadRecipe = async function (id) {
       publisher: recipe.publisher,
       sourceUrl: recipe.source_url,
       image: recipe.image_url,
-      servings: recipe.servings, // not always there
-      cookingTime: recipe.cooking_time,
       ingredients: recipe.ingredients, // an array
     };
+    // Check if the state object's bookmark array contains the ID of the recipe you supply this function
+    // Set the "bookmarked" KVP equal to true or false accordingly
+    if (state.bookmarks.includes(id)) state.recipe.bookmarked = true;
+    else state.recipe.bookmarked = false;
+    console.log(`MODEL state obj:`, state);
   } catch (err) {
     throw err;
     //# ERROR HANDLING PART 1/3
@@ -80,9 +82,9 @@ export const getSearchResultsPage = function (page = state.search.page) {
 };
 
 export const addBookmark = function (recipe) {
-  // Add bookmark to the state object's array of them
-  state.bookmarks.push(recipe);
-  // Mark current recipe as bookmark (adds white to the bookmark icon)
+  // Add recipe ID to the state object's bookmark list/array
+  state.bookmarks.push(recipe.id);
+  // Mark current recipe as bookmarked (adds white to the bookmark icon)
   if (recipe.id === state.recipe.id) state.recipe.bookmarked = true;
   // If the recipe you supply this function
   // Equals the state's recipe object ID

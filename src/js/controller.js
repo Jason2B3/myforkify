@@ -81,8 +81,7 @@ const controlPagination = function (goToPage) {
 
 const controlAddBookmark = function () {
   model.addBookmark(model.state.recipe);
-  console.log('State recipe object incoming, post bookmark press: from C/');
-  console.log(model.state.recipe);
+  recipeView.update(model.state.recipe)
 };
 
 //@ This is the MVC Version of Pub-Sub

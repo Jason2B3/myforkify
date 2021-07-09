@@ -21,13 +21,13 @@ class RecipeView extends View {
     window.addEventListener('hashchange', handler);
     window.addEventListener('load', handler);
   }
-  addHandlerBookmark(handler){
-    this._parentElement.addEventListener('click', function(e) { 
-      e.preventDefault() //! testing
-      const btn= e.target.closest('.btn--bookmark')
-      if(!btn) return;
+  addHandlerBookmark(handler) {
+    this._parentElement.addEventListener('click', function (e) {
+      // e.preventDefault(); //! testing
+      const btn = e.target.closest('.btn--bookmark');
+      if (!btn) return;
       handler();
-    })
+    });
   }
 
   _generateMarkupIngredient(ing) {
@@ -41,12 +41,18 @@ class RecipeView extends View {
   </li>`;
   }
   _generateMarkup() {
+    // Generate the text for each ingredient
     let loop = this._data.ingredients
       .map(ingr => {
         if (ingr != '&nbsp' || ingr != '&nbsp;')
           return this._generateMarkupIngredient(ingr);
       })
       .join('');
+    // Determine whether to fill in the bookmark icon or not
+    let bookmarkHTML;
+    if (this._data.bookmarked === true) bookmarkHTML = '#icon-bookmark-fill';
+    else bookmarkHTML = '#icon-bookmark';
+
     return `<figure class="recipe__fig">
     <img src=${this._data.image} alt=${this._data.title} class="recipe__img" />
     <h1 class="recipe__title">
@@ -64,7 +70,7 @@ class RecipeView extends View {
     
     <button class="btn--round btn--bookmark">
       <svg class="">
-        <use href="${icons}#icon-bookmark${this._data.bookmarked ? '-fill' :''}"></use>
+        <use href="${icons}${bookmarkHTML}"></use>
       </svg>
     </button>
 
