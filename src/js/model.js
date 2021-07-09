@@ -3,7 +3,14 @@ import { API_URL, RES_PER_PAGE } from './config.js';
 import { getJSON } from './helpers.js';
 
 export const state = {
-  recipe: {},
+  recipe: {
+    // id:
+    // title:
+    // publisher:
+    // sourceUrl:
+    // image:
+    // ingredients:
+  },
   search: {
     query: '', // what the user searched
     results: [],
@@ -57,16 +64,30 @@ export const loadRecipe = async function (id) {
       image: recipe.image_url,
       ingredients: recipe.ingredients, // an array
     };
-    // Check if the state object's bookmark array contains the ID of the recipe you supply this function
+
+    //# Keep the bookmark active even after viewing a new recipe
+    // HOW: Check if the state object's bookmark array contains the ID of the recipe you supply this function
     // Set the "bookmarked" KVP equal to true or false accordingly
     if (state.bookmarks.includes(id)) state.recipe.bookmarked = true;
     else state.recipe.bookmarked = false;
-    console.log(`MODEL state obj:`, state);
   } catch (err) {
     throw err;
     //# ERROR HANDLING PART 1/3
     // PASSES REJECTED PROMISE TO THE OTHER ASYNC FUNCTION THAT USES loadRecipe()
   }
+};
+export const addBookmark = function (recipe) {
+  // Add recipe ID to the state object's bookmark list/array
+  state.bookmarks.push(recipe.id);
+  // Mark current recipe as bookmarked (adds white to the bookmark icon)
+  state.recipe.bookmarked = true;
+};
+export const deleteBookmark = function (recipe) {
+  // Remove recipe ID from the state object's bookmark list/array
+  let ind = state.bookmarks.indexOf(recipe.id);
+  state.bookmarks.splice(ind, 1);
+  // Mark current recipe as NOT bookmarked (adds white to the bookmark icon)
+  state.recipe.bookmarked = false;
 };
 
 //% PAGINATION PART 1:
@@ -79,14 +100,4 @@ export const getSearchResultsPage = function (page = state.search.page) {
   const start = (page - 1) * RES_PER_PAGE;
   const end = page * RES_PER_PAGE;
   return state.search.results.slice(start, end);
-};
-
-export const addBookmark = function (recipe) {
-  // Add recipe ID to the state object's bookmark list/array
-  state.bookmarks.push(recipe.id);
-  // Mark current recipe as bookmarked (adds white to the bookmark icon)
-  if (recipe.id === state.recipe.id) state.recipe.bookmarked = true;
-  // If the recipe you supply this function
-  // Equals the state's recipe object ID
-  // Then it adds a new property to the state object: bookmarked=true
 };

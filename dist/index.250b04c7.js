@@ -516,8 +516,21 @@ const controlPagination = function (goToPage) {
   _viewsPaginationViewJsDefault.default.render(_modelJs.state.search);
 };
 const controlAddBookmark = function () {
-  _modelJs.addBookmark(_modelJs.state.recipe);
-  _viewsRecipeViewJsDefault.default.update(_modelJs.state.recipe);
+  console.log('controller top', _modelJs.state.recipe.bookmarked);
+  // If a recipe IS NOT bookmarked yet, bookmark it
+  if (!_modelJs.state.recipe.bookmarked) {
+    _modelJs.addBookmark(_modelJs.state.recipe);
+    console.log('controller mid', _modelJs.state.recipe.bookmarked);
+    _viewsRecipeViewJsDefault.default.update(_modelJs.state.recipe);
+    return;
+  }
+  // If a recipe IS bookmarked, remove it
+  if (_modelJs.state.recipe.bookmarked) {
+    _modelJs.deleteBookmark(_modelJs.state.recipe);
+    console.log('controller bot', _modelJs.state.recipe.bookmarked);
+    _viewsRecipeViewJsDefault.default.update(_modelJs.state.recipe);
+    return;
+  }
 };
 // @ This is the MVC Version of Pub-Sub
 const init = function () {
@@ -13037,11 +13050,14 @@ _parcelHelpers.export(exports, "loadSearchResults", function () {
 _parcelHelpers.export(exports, "loadRecipe", function () {
   return loadRecipe;
 });
-_parcelHelpers.export(exports, "getSearchResultsPage", function () {
-  return getSearchResultsPage;
-});
 _parcelHelpers.export(exports, "addBookmark", function () {
   return addBookmark;
+});
+_parcelHelpers.export(exports, "deleteBookmark", function () {
+  return deleteBookmark;
+});
+_parcelHelpers.export(exports, "getSearchResultsPage", function () {
+  return getSearchResultsPage;
 });
 require('regenerator-runtime');
 var _configJs = require('./config.js');
@@ -13100,13 +13116,26 @@ const loadRecipe = async function (id) {
       image: recipe.image_url,
       ingredients: recipe.ingredients
     };
-    // Check if the state object's bookmark array contains the ID of the recipe you supply this function
+    // # Keep the bookmark active even after viewing a new recipe
+    // HOW: Check if the state object's bookmark array contains the ID of the recipe you supply this function
     // Set the "bookmarked" KVP equal to true or false accordingly
     if (state.bookmarks.includes(id)) state.recipe.bookmarked = true; else state.recipe.bookmarked = false;
-    console.log(`MODEL state obj:`, state);
   } catch (err) {
     throw err;
   }
+};
+const addBookmark = function (recipe) {
+  // Add recipe ID to the state object's bookmark list/array
+  state.bookmarks.push(recipe.id);
+  // Mark current recipe as bookmarked (adds white to the bookmark icon)
+  state.recipe.bookmarked = true;
+};
+const deleteBookmark = function (recipe) {
+  // Remove recipe ID from the state object's bookmark list/array
+  let ind = state.bookmarks.indexOf(recipe.id);
+  state.bookmarks.splice(ind, 1);
+  // Mark current recipe as NOT bookmarked (adds white to the bookmark icon)
+  state.recipe.bookmarked = false;
 };
 const getSearchResultsPage = function (page = state.search.page) {
   // Adjust page buttons to a "start at 1" type of count
@@ -13116,12 +13145,6 @@ const getSearchResultsPage = function (page = state.search.page) {
   const start = (page - 1) * _configJs.RES_PER_PAGE;
   const end = page * _configJs.RES_PER_PAGE;
   return state.search.results.slice(start, end);
-};
-const addBookmark = function (recipe) {
-  // Add recipe ID to the state object's bookmark list/array
-  state.bookmarks.push(recipe.id);
-  // Mark current recipe as bookmarked (adds white to the bookmark icon)
-  if (recipe.id === state.recipe.id) state.recipe.bookmarked = true;
 };
 
 },{"regenerator-runtime":"62Qib","./config.js":"6pr2F","./helpers.js":"581KF","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"6pr2F":[function(require,module,exports) {
@@ -13194,7 +13217,6 @@ class RecipeView extends _ViewJsDefault.default {
   }
   addHandlerBookmark(handler) {
     this._parentElement.addEventListener('click', function (e) {
-      // e.preventDefault(); //! testing
       const btn = e.target.closest('.btn--bookmark');
       if (!btn) return;
       handler();

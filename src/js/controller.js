@@ -80,8 +80,21 @@ const controlPagination = function (goToPage) {
 };
 
 const controlAddBookmark = function () {
-  model.addBookmark(model.state.recipe);
-  recipeView.update(model.state.recipe)
+  console.log('controller top', model.state.recipe.bookmarked);
+  // If a recipe IS NOT bookmarked yet, bookmark it
+  if (!model.state.recipe.bookmarked) {
+    model.addBookmark(model.state.recipe);
+    console.log('controller mid', model.state.recipe.bookmarked);
+    recipeView.update(model.state.recipe);
+    return;
+  }
+  // If a recipe IS bookmarked, remove it
+  if (model.state.recipe.bookmarked) {
+    model.deleteBookmark(model.state.recipe);
+    console.log('controller bot', model.state.recipe.bookmarked);
+    recipeView.update(model.state.recipe);
+    return;
+  }
 };
 
 //@ This is the MVC Version of Pub-Sub
