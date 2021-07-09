@@ -10,12 +10,14 @@ export const state = {
     page: 1, // set page number to 1 by default
     resultsPerPage: 10,
   },
+  bookmarks: [],
+  bookmarked: false, // the default 
 };
 
 export const loadSearchResults = async function (searchFieldInput) {
   // MAIN OBJECTIVE: Change state object with your search results
   try {
-    model.state.search.page=1 // reset page to 1 after every search
+    state.search.page = 1; // reset page to 1 after every search
     state.search.query = searchFieldInput; //$ update state obj
     // Scan API for your search query
     // fetchAPI returns an array of objects containing ID's recipe titles, images...etc
@@ -45,8 +47,7 @@ export const loadRecipe = async function (id) {
     // Store resolved fetchAPI promise value from getJSON() into "data"
     const data = await getJSON(`${API_URL}${id}`);
     console.log(`${API_URL}${id}`); // link to the JSON data
-    // console.log('raw parsed JSON incoming');
-    // console.log(data);
+
     // Reformat the info captured from our fetch request so the names are simpler
     const { recipe } = data;
     state.recipe = {
@@ -59,8 +60,6 @@ export const loadRecipe = async function (id) {
       cookingTime: recipe.cooking_time,
       ingredients: recipe.ingredients, // an array
     };
-    // console.log('state object recipe incoming');
-    // console.log(state.recipe);
   } catch (err) {
     throw err;
     //# ERROR HANDLING PART 1/3
@@ -71,7 +70,6 @@ export const loadRecipe = async function (id) {
 //% PAGINATION PART 1:
 //% AIM: Only show the first 10 search results in our rendered search list
 //% Introduce a "Page #" button that renders other recipes if pressed
-
 export const getSearchResultsPage = function (page = state.search.page) {
   // Adjust page buttons to a "start at 1" type of count
   // RES_PER_PAGE is set to 10 in our config file
@@ -79,4 +77,14 @@ export const getSearchResultsPage = function (page = state.search.page) {
   const start = (page - 1) * RES_PER_PAGE;
   const end = page * RES_PER_PAGE;
   return state.search.results.slice(start, end);
+};
+
+export const addBookmark = function (recipe) {
+  // Add bookmark to the state object's array of them
+  state.bookmarks.push(recipe);
+  // Mark current recipe as bookmark (adds white to the bookmark icon)
+  if (recipe.id === state.recipe.id) state.recipe.bookmarked = true;
+  // If the recipe you supply this function
+  // Equals the state's recipe object ID
+  // Then it adds a new property to the state object: bookmarked=true
 };

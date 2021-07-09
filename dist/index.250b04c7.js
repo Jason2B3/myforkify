@@ -453,9 +453,9 @@ var _viewsPaginationViewJs = require('./views/paginationView.js');
 var _viewsPaginationViewJsDefault = _parcelHelpers.interopDefault(_viewsPaginationViewJs);
 require('core-js/stable');
 require('regenerator-runtime/runtime');
+var _viewsResultsViewJsDefault = _parcelHelpers.interopDefault(_viewsResultsViewJs);
 // default NPM imports
 if (module.hot) module.hot.accept();
-// "enables polyfills for async JS"
 // —————————————————————【 END OF IMPORTS ZONE 】——————————————————————————
 const timeout = function (s) {
   return new Promise(function (_, reject) {
@@ -469,10 +469,11 @@ const timeout = function (s) {
 const controlRecipes = async function () {
   try {
     const id = window.location.hash.slice(1);
-    // console.log(window.location.hash);
     if (!id) return;
     // guard clause if we have no ID
     _viewsRecipeViewJsDefault.default.renderSpinner();
+    // 0) Update results view to keep the selected search result highlighted/shaded
+    _viewsResultsViewJsDefault.default.update(_modelJs.getSearchResultsPage());
     // 1)  Load the recipe (async F which returns a promise)
     await _modelJs.loadRecipe(id);
     // the below function returns nothing, so it needs no variable. just changes the state object
@@ -514,13 +515,17 @@ const controlPagination = function (goToPage) {
   // 2) Render NEW pagination buttons
   _viewsPaginationViewJsDefault.default.render(_modelJs.state.search);
 };
-// @ MVC Version of PubSub PART 1 and 2
+const controlAddBookmark = function () {
+  _modelJs.addBookmark(_modelJs.state.recipe);
+  console.log('State recipe object incoming, post bookmark press: from C/');
+  console.log(_modelJs.state.recipe);
+};
+// @ This is the MVC Version of Pub-Sub
 const init = function () {
   _viewsRecipeViewJsDefault.default.addHandlerRender(controlRecipes);
-  // PART 1
   _viewsSearchViewJs.default.addHandlerSearch(controlSearchResults);
-  // PART 2
   _viewsPaginationViewJsDefault.default.addHandlerClick(controlPagination);
+  _viewsRecipeViewJsDefault.default.addHandlerBookmark(controlAddBookmark);
 };
 init();
 
@@ -13036,6 +13041,9 @@ _parcelHelpers.export(exports, "loadRecipe", function () {
 _parcelHelpers.export(exports, "getSearchResultsPage", function () {
   return getSearchResultsPage;
 });
+_parcelHelpers.export(exports, "addBookmark", function () {
+  return addBookmark;
+});
 require('regenerator-runtime');
 var _configJs = require('./config.js');
 var _helpersJs = require('./helpers.js');
@@ -13048,12 +13056,14 @@ const state = {
     page: 1,
     // set page number to 1 by default
     resultsPerPage: 10
-  }
+  },
+  bookmarks: [],
+  bookmarked: false
 };
 const loadSearchResults = async function (searchFieldInput) {
   // MAIN OBJECTIVE: Change state object with your search results
   try {
-    model.state.search.page = 1;
+    state.search.page = 1;
     // reset page to 1 after every search
     state.search.query = searchFieldInput;
     // $ update state obj
@@ -13082,8 +13092,6 @@ const loadRecipe = async function (id) {
     const data = await _helpersJs.getJSON(`${_configJs.API_URL}${id}`);
     console.log(`${_configJs.API_URL}${id}`);
     // link to the JSON data
-    // console.log('raw parsed JSON incoming');
-    // console.log(data);
     // Reformat the info captured from our fetch request so the names are simpler
     const {recipe} = data;
     state.recipe = {
@@ -13109,6 +13117,12 @@ const getSearchResultsPage = function (page = state.search.page) {
   const start = (page - 1) * _configJs.RES_PER_PAGE;
   const end = page * _configJs.RES_PER_PAGE;
   return state.search.results.slice(start, end);
+};
+const addBookmark = function (recipe) {
+  // Add bookmark to the state object's array of them
+  state.bookmarks.push(recipe);
+  // Mark current recipe as bookmark (adds white to the bookmark icon)
+  if (recipe.id === state.recipe.id) state.recipe.bookmarked = true;
 };
 
 },{"regenerator-runtime":"62Qib","./config.js":"6pr2F","./helpers.js":"581KF","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"6pr2F":[function(require,module,exports) {
@@ -13179,6 +13193,15 @@ class RecipeView extends _ViewJsDefault.default {
     window.addEventListener('hashchange', handler);
     window.addEventListener('load', handler);
   }
+  addHandlerBookmark(handler) {
+    this._parentElement.addEventListener('click', function (e) {
+      e.preventDefault();
+      // ! testing
+      const btn = e.target.closest('.btn--bookmark');
+      if (!btn) return;
+      handler();
+    });
+  }
   _generateMarkupIngredient(ing) {
     return `<li class="recipe__ingredient">
     <svg class="recipe__icon">
@@ -13190,9 +13213,6 @@ class RecipeView extends _ViewJsDefault.default {
   </li>`;
   }
   _generateMarkup() {
-    console.log('data incoming');
-    console.log(this._data);
-    // console.log(this._data.ingredients);
     let loop = this._data.ingredients.map(ingr => {
       if (ingr != '&nbsp' || ingr != '&nbsp;') return this._generateMarkupIngredient(ingr);
     }).join('');
@@ -13211,11 +13231,12 @@ class RecipeView extends _ViewJsDefault.default {
       </svg>
     </div>
     
-    <button class="btn--round">
+    <button class="btn--round btn--bookmark">
       <svg class="">
-        <use href="${_urlImgIconsSvgDefault.default}#icon-bookmark-fill"></use>
+        <use href="${_urlImgIconsSvgDefault.default}#icon-bookmark${this._data.bookmarked ? '-fill' : ''}"></use>
       </svg>
     </button>
+
   </div>
 
   <div class="recipe__ingredients">
@@ -13699,6 +13720,32 @@ class View {
     this._clear();
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
   }
+  update(data) {
+    this._data = data;
+    // Set data variable equal to the info we pass in as an arg (info came from model=>controller)
+    const newMarkup = this._generateMarkup();
+    // ———————————【everything above is identical to render()】————————————————
+    const newDOM = document.createRange().createContextualFragment(newMarkup);
+    // Capture all elements within the current HTML container and the one about 2Brendered
+    // conv nodelists into arrays with Array.from(), you can loop over them ATST
+    const newElements = Array.from(newDOM.querySelectorAll('*'));
+    const curElements = Array.from(this._parentElement.querySelectorAll('*'));
+    newElements.forEach((newEl, i) => {
+      const curEl = curElements[i];
+      // 1) Updates changed TEXT
+      // Changes old DOM elements with new DOM elements, but only those whose text content's changed
+      if (!newEl.isEqualNode(curEl) && newEl.firstChild?.nodeValue?.trim?.() !== '') {
+        curEl.textContent = newEl.textContent;
+      }
+      // 2) Updates changed ATTRIBUTES
+      // We change the old attributes with the new ones
+      if (!newEl.isEqualNode(curEl)) {
+        console.log(newEl.attribute);
+        // logs attributes of all EL's that have changed
+        Array.from(newEl.attributes).forEach(attr => curEl.setAttribute(attr.name, attr.value));
+      }
+    });
+  }
   renderError(message = this._errorMSG) {
     // # ERROR HANDLING PART 3/3
     // We want to render content when a fetchAPI call goes wrong
@@ -13786,8 +13833,10 @@ class resultsView extends _ViewJsDefault.default {
     return this._data.map(this._generateMarkupPreview).join('');
   }
   _generateMarkupPreview(result) {
+    // Keep a recipe highlighted after clicking on it in the search results list
+    const id = window.location.hash.slice(1);
     return `<li class="preview">
-    <a class="preview__link preview__link--active" href="#${result.id}">
+    <a class="preview__link ${result.id === id ? 'preview__link--active' : ''}" href="#${result.id}">
       <figure class="preview__fig">
         <img src="${result.image}" alt="Test" />
       </figure>
@@ -13823,7 +13872,6 @@ class paginationView extends _ViewJsDefault.default {
       const nearestBtn = e.target.closest('.btn--inline');
       if (!nearestBtn) return;
       // guard clause in case we click the parent
-      // console.log(nearestBtn)
       const goToPage = +nearestBtn.dataset.goto;
       handler(goToPage);
     });

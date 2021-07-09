@@ -16,18 +16,51 @@ export default class View {
   render(data) {
     if (!data || (Array.isArray(data) && data.length === 0))
       return this.renderError();
-      // Guard clause in case we retreive no data, OR that data is an empty array
+    // Guard clause in case we retreive no data, OR that data is an empty array
     this._data = data;
     // Set data variable equal to the info we pass in as an arg (info came from model=>controller)
-    const markup = this._generateMarkup(); //% SO IMPORTANT: 
-    //% This will generate markup by passing on the job to another module's generateMarkup method. 
-    //% You define how that works in that module. 
+    const markup = this._generateMarkup(); //% SO IMPORTANT:
+    //% This will generate markup by passing on the job to another module's generateMarkup method.
+    //% You define how that works in that module.
     //% But you can use this render function on autopilot every single time
 
     this._clear();
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
     // add your markup which is pre-styled in SASS
   }
+  update(data) {
+    this._data = data;
+    // Set data variable equal to the info we pass in as an arg (info came from model=>controller)
+    const newMarkup = this._generateMarkup();
+    //———————————【everything above is identical to render()】————————————————
+
+    const newDOM = document.createRange().createContextualFragment(newMarkup);
+    // Capture all elements within the current HTML container and the one about 2Brendered
+    // conv nodelists into arrays with Array.from(), you can loop over them ATST
+    const newElements = Array.from(newDOM.querySelectorAll('*'));
+    const curElements = Array.from(this._parentElement.querySelectorAll('*'));
+
+    newElements.forEach((newEl, i) => {
+      const curEl = curElements[i];
+      // 1) Updates changed TEXT
+      // Changes old DOM elements with new DOM elements, but only those whose text content's changed
+      if (
+        !newEl.isEqualNode(curEl) &&
+        newEl.firstChild?.nodeValue.trim() !== ''
+      ) {
+        curEl.textContent = newEl.textContent;
+      }
+      // 2) Updates changed ATTRIBUTES
+      // We change the old attributes with the new ones
+      if (!newEl.isEqualNode(curEl)) {
+        console.log(newEl.attribute); // logs attributes of all EL's that have changed
+        Array.from(newEl.attributes).forEach(attr =>
+          curEl.setAttribute(attr.name, attr.value)
+        );
+      }
+    });
+  }
+
   renderError(message = this._errorMSG) {
     //# ERROR HANDLING PART 3/3
     // We want to render content when a fetchAPI call goes wrong

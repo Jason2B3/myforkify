@@ -8,6 +8,7 @@ import paginationView from './views/paginationView.js';
 if (module.hot) module.hot.accept();
 import 'core-js/stable'; // "enables polyfills"
 import 'regenerator-runtime/runtime'; //"enables polyfills for async JS"
+import resultsView from './views/resultsView.js';
 
 //—————————————————————【 END OF IMPORTS ZONE 】——————————————————————————
 const timeout = function (s) {
@@ -24,9 +25,11 @@ const timeout = function (s) {
 const controlRecipes = async function () {
   try {
     const id = window.location.hash.slice(1);
-    // console.log(window.location.hash);
     if (!id) return; // guard clause if we have no ID
     recipeView.renderSpinner();
+
+    // 0) Update results view to keep the selected search result highlighted/shaded
+    resultsView.update(model.getSearchResultsPage());
 
     // 1)  Load the recipe (async F which returns a promise)
     await model.loadRecipe(id);
@@ -34,7 +37,7 @@ const controlRecipes = async function () {
     // it IS async, which returns a promise- so we need await to halt our ƒ()'s execution
 
     // 2)  Render the recipe
-    recipeView.render(model.state.recipe); //! error here
+    recipeView.render(model.state.recipe);
   } catch (err) {
     //# ERROR HANDLING PART 2/3
     // We use functions from view to render the visuals to convey an error
@@ -45,7 +48,6 @@ const controlRecipes = async function () {
 //@ CONTROLLER: Using the searchbar
 const controlSearchResults = async function () {
   try {
-    
     // 0) Render Spinner while we wait for real stuff to happen
     ResultsView.renderSpinner();
     // 1) Get search query and clear input field
@@ -77,11 +79,18 @@ const controlPagination = function (goToPage) {
   // paginationView.js addHandlerClick() function
 };
 
-//@ MVC Version of PubSub PART 1 and 2
+const controlAddBookmark = function () {
+  model.addBookmark(model.state.recipe);
+  console.log('State recipe object incoming, post bookmark press: from C/');
+  console.log(model.state.recipe);
+};
+
+//@ This is the MVC Version of Pub-Sub
 const init = function () {
-  recipeView.addHandlerRender(controlRecipes); //PART 1
-  searchView.addHandlerSearch(controlSearchResults); // PART 2
+  recipeView.addHandlerRender(controlRecipes);
+  searchView.addHandlerSearch(controlSearchResults);
   paginationView.addHandlerClick(controlPagination);
-  //@ notice how each handler is a shotcaller function defined inside the controller
+  recipeView.addHandlerBookmark(controlAddBookmark);
+  //@ each handler is a shotcaller function defined inside the controller
 };
 init();

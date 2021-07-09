@@ -10,8 +10,12 @@ class resultsView extends View {
     return this._data.map(this._generateMarkupPreview).join('');
   }
   _generateMarkupPreview(result) {
+    // Keep a recipe highlighted after clicking on it in the search results list
+    const id = window.location.hash.slice(1);
     return `<li class="preview">
-    <a class="preview__link preview__link--active" href="#${result.id}">
+    <a class="preview__link ${
+      result.id === id ? 'preview__link--active' : ''
+    }" href="#${result.id}">
       <figure class="preview__fig">
         <img src="${result.image}" alt="Test" />
       </figure>

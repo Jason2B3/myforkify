@@ -8,7 +8,6 @@ class paginationView extends View {
     this._parentElement.addEventListener('click', function(e) { 
       const nearestBtn= e.target.closest('.btn--inline')
       if(!nearestBtn) return; // guard clause in case we click the parent
-      // console.log(nearestBtn)
       const goToPage= +nearestBtn.dataset.goto
       handler(goToPage) 
       // pass controller's controlPagination() the dataset value 

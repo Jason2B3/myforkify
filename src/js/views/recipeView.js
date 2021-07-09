@@ -21,6 +21,15 @@ class RecipeView extends View {
     window.addEventListener('hashchange', handler);
     window.addEventListener('load', handler);
   }
+  addHandlerBookmark(handler){
+    this._parentElement.addEventListener('click', function(e) { 
+      e.preventDefault() //! testing
+      const btn= e.target.closest('.btn--bookmark')
+      if(!btn) return;
+      handler();
+    })
+  }
+
   _generateMarkupIngredient(ing) {
     return `<li class="recipe__ingredient">
     <svg class="recipe__icon">
@@ -32,9 +41,6 @@ class RecipeView extends View {
   </li>`;
   }
   _generateMarkup() {
-    console.log('data incoming');
-    console.log(this._data);
-    // console.log(this._data.ingredients);
     let loop = this._data.ingredients
       .map(ingr => {
         if (ingr != '&nbsp' || ingr != '&nbsp;')
@@ -56,11 +62,12 @@ class RecipeView extends View {
       </svg>
     </div>
     
-    <button class="btn--round">
+    <button class="btn--round btn--bookmark">
       <svg class="">
-        <use href="${icons}#icon-bookmark-fill"></use>
+        <use href="${icons}#icon-bookmark${this._data.bookmarked ? '-fill' :''}"></use>
       </svg>
     </button>
+
   </div>
 
   <div class="recipe__ingredients">
