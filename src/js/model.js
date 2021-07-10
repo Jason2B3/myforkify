@@ -17,7 +17,8 @@ export const state = {
     page: 1, // set page number to 1 by default
     resultsPerPage: 10,
   },
-  bookmarks: [],
+  bookmarks: [], // ID's only
+  bookmarkID: [], // entire recipe objects contained for BM'd recipes
 };
 
 export const loadSearchResults = async function (searchFieldInput) {
@@ -68,7 +69,7 @@ export const loadRecipe = async function (id) {
     //# Keep the bookmark active even after viewing a new recipe
     // HOW: Check if the state object's bookmark array contains the ID of the recipe you supply this function
     // Set the "bookmarked" KVP equal to true or false accordingly
-    if (state.bookmarks.includes(id)) state.recipe.bookmarked = true;
+    if (state.bookmarkID.includes(id)) state.recipe.bookmarked = true;
     else state.recipe.bookmarked = false;
   } catch (err) {
     throw err;
@@ -78,16 +79,21 @@ export const loadRecipe = async function (id) {
 };
 export const addBookmark = function (recipe) {
   // Add recipe ID to the state object's bookmark list/array
-  state.bookmarks.push(recipe.id);
+  state.bookmarks.push(recipe);
+  state.bookmarkID.push(recipe.id);
   // Mark current recipe as bookmarked (adds white to the bookmark icon)
   state.recipe.bookmarked = true;
+  console.log('state post addition', state);
 };
 export const deleteBookmark = function (recipe) {
   // Remove recipe ID from the state object's bookmark list/array
-  let ind = state.bookmarks.indexOf(recipe.id);
+  //# Find index of the bookmarks array that contains id:
+  const ind = state.bookmarkID.indexOf(recipe.id);
   state.bookmarks.splice(ind, 1);
-  // Mark current recipe as NOT bookmarked (adds white to the bookmark icon)
+  state.bookmarkID.splice(ind, 1);
+  // Mark current recipe as NOT bookmarked (removes white to the bookmark icon)
   state.recipe.bookmarked = false;
+  console.log('state post deletion', state);
 };
 
 //% PAGINATION PART 1:

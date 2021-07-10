@@ -518,25 +518,27 @@ const controlPagination = function (goToPage) {
   _viewsPaginationViewJsDefault.default.render(_modelJs.state.search);
 };
 const controlAddBookmark = function () {
-  console.log('controller top', _modelJs.state.recipe.bookmarked);
   // 1a) If a recipe IS NOT bookmarked yet, bookmark it
   if (!_modelJs.state.recipe.bookmarked) {
     _modelJs.addBookmark(_modelJs.state.recipe);
-    console.log('controller mid', _modelJs.state.recipe.bookmarked);
     // 1b) Update recipeView
     _viewsRecipeViewJsDefault.default.update(_modelJs.state.recipe);
     // 1c) Render bookmarks
-    _viewsBookmarksViewJsDefault.default.render(_modelJs.state.bookmarks);
+    // ! MUST FIX
+    _viewsBookmarksViewJsDefault.default.render(_modelJs.state.bookmarkDatum);
+    // !
     return;
   }
   // 2a) If a recipe IS bookmarked, remove it
   if (_modelJs.state.recipe.bookmarked) {
     _modelJs.deleteBookmark(_modelJs.state.recipe);
-    console.log('controller bot', _modelJs.state.recipe.bookmarked);
+    console.log('controller bot', _modelJs.state.recipe.bookmarks);
     // 2b) update recipeView
     _viewsRecipeViewJsDefault.default.update(_modelJs.state.recipe);
     // 2c) Render bookmarks
+    // ! MUST FIX
     _viewsBookmarksViewJsDefault.default.render(_modelJs.state.bookmarks);
+    // !
     return;
   }
 };
@@ -13080,7 +13082,9 @@ const state = {
     // set page number to 1 by default
     resultsPerPage: 10
   },
-  bookmarks: []
+  bookmarks: [],
+  // ID's only
+  bookmarkID: []
 };
 const loadSearchResults = async function (searchFieldInput) {
   // MAIN OBJECTIVE: Change state object with your search results
@@ -13127,23 +13131,28 @@ const loadRecipe = async function (id) {
     // # Keep the bookmark active even after viewing a new recipe
     // HOW: Check if the state object's bookmark array contains the ID of the recipe you supply this function
     // Set the "bookmarked" KVP equal to true or false accordingly
-    if (state.bookmarks.includes(id)) state.recipe.bookmarked = true; else state.recipe.bookmarked = false;
+    if (state.bookmarkID.includes(id)) state.recipe.bookmarked = true; else state.recipe.bookmarked = false;
   } catch (err) {
     throw err;
   }
 };
 const addBookmark = function (recipe) {
   // Add recipe ID to the state object's bookmark list/array
-  state.bookmarks.push(recipe.id);
+  state.bookmarks.push(recipe);
+  state.bookmarkID.push(recipe.id);
   // Mark current recipe as bookmarked (adds white to the bookmark icon)
   state.recipe.bookmarked = true;
+  console.log('state post addition', state);
 };
 const deleteBookmark = function (recipe) {
   // Remove recipe ID from the state object's bookmark list/array
-  let ind = state.bookmarks.indexOf(recipe.id);
+  // # Find index of the bookmarks array that contains id:
+  const ind = state.bookmarkID.indexOf(recipe.id);
   state.bookmarks.splice(ind, 1);
-  // Mark current recipe as NOT bookmarked (adds white to the bookmark icon)
+  state.bookmarkID.splice(ind, 1);
+  // Mark current recipe as NOT bookmarked (removes white to the bookmark icon)
   state.recipe.bookmarked = false;
+  console.log('state post deletion', state);
 };
 const getSearchResultsPage = function (page = state.search.page) {
   // Adjust page buttons to a "start at 1" type of count

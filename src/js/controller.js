@@ -81,25 +81,27 @@ const controlPagination = function (goToPage) {
 };
 
 const controlAddBookmark = function () {
-  console.log('controller top', model.state.recipe.bookmarked);
   // 1a) If a recipe IS NOT bookmarked yet, bookmark it
   if (!model.state.recipe.bookmarked) {
     model.addBookmark(model.state.recipe);
-    console.log('controller mid', model.state.recipe.bookmarked);
     // 1b) Update recipeView
     recipeView.update(model.state.recipe);
     // 1c) Render bookmarks
-    bookmarksView.render(model.state.bookmarks);
+    //! MUST FIX
+    bookmarksView.render(model.state.bookmarkDatum);
+    //!
     return;
   }
   // 2a) If a recipe IS bookmarked, remove it
   if (model.state.recipe.bookmarked) {
     model.deleteBookmark(model.state.recipe);
-    console.log('controller bot', model.state.recipe.bookmarked);
+    console.log('controller bot', model.state.recipe.bookmarks);
     // 2b) update recipeView
     recipeView.update(model.state.recipe);
     // 2c) Render bookmarks
+    //! MUST FIX
     bookmarksView.render(model.state.bookmarks);
+    //!
     return;
   }
 };
