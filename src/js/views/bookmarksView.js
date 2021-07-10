@@ -20,7 +20,9 @@ class bookmarksView extends View {
       .join('');
     return generateAll;
   }
-
+  addHandlerRender(handler){
+    window.addEventListener('load', handler)
+  }
   addHandlerPreview(handler) {
     this._bookmarksButton.addEventListener('mouseenter', handler);
   }

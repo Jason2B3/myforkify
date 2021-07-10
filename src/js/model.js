@@ -77,12 +77,20 @@ export const loadRecipe = async function (id) {
     // PASSES REJECTED PROMISE TO THE OTHER ASYNC FUNCTION THAT USES loadRecipe()
   }
 };
+//! LAST FLASH --------------------------------------------------------------------
+//@ Save the current bookmarks to local storage
+const persistBookmarks = function (bm, bmID) {
+  // used after a bookmark is set or deleted
+  localStorage.setItem('bookmarks', JSON.stringify(bm));
+  localStorage.setItem('bookmarksID', JSON.stringify(bmID));
+};
 export const addBookmark = function (recipe) {
   // Add recipe ID to the state object's bookmark list/array
   state.bookmarks.push(recipe);
   state.bookmarksID.push(recipe.id);
   // Mark current recipe as bookmarked (adds white to the bookmark icon)
   state.recipe.bookmarked = true;
+  persistBookmarks(state.bookmarks, state.bookmarksID);
   console.log('state post addition', state);
 };
 export const deleteBookmark = function (recipe) {
@@ -93,8 +101,10 @@ export const deleteBookmark = function (recipe) {
   state.bookmarksID.splice(ind, 1);
   // Mark current recipe as NOT bookmarked (removes white to the bookmark icon)
   state.recipe.bookmarked = false;
+  persistBookmarks(state.bookmarks, state.bookmarksID);
   console.log('state post deletion', state);
 };
+//!--------------------------------------------------------------------
 
 //% PAGINATION PART 1:
 //% AIM: Only show the first 10 search results in our rendered search list
@@ -107,3 +117,11 @@ export const getSearchResultsPage = function (page = state.search.page) {
   const end = page * RES_PER_PAGE;
   return state.search.results.slice(start, end);
 };
+
+const initBM = function () {
+  const storage1 = localStorage.getItem('bookmarks');
+  const storage2 = localStorage.getItem('bookmarksID');
+  if (storage1) state.bookmarks = JSON.parse(storage1);
+  if (storage2) state.bookmarksID = JSON.parse(storage2);
+};
+initBM();

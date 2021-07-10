@@ -517,6 +517,7 @@ const controlPagination = function (goToPage) {
   // 2) Render NEW pagination buttons
   _viewsPaginationViewJsDefault.default.render(_modelJs.state.search);
 };
+// ! LAST FLASH ---------------------------------------------------------------
 const controlAddBookmark = function () {
   // 1a) If a recipe IS NOT bookmarked yet, bookmark it
   if (!_modelJs.state.recipe.bookmarked) {
@@ -539,6 +540,8 @@ const controlAddBookmark = function () {
 };
 const controlHoverBookmark = function () {
   // List all the bookmarked recipe previews, but only when hovering
+  // Shadow the recipe we're currently on
+  // Move the shadow when we hover over a specific recipe on the preview list
   _viewsBookmarksViewJsDefault.default.render(_modelJs.state.bookmarks);
 };
 // @ This is the MVC Version of Pub-Sub
@@ -13136,12 +13139,20 @@ const loadRecipe = async function (id) {
     throw err;
   }
 };
+// ! LAST FLASH --------------------------------------------------------------------
+// @ Save the current bookmarks to local storage
+const persistBookmarks = function (bm, bmID) {
+  // used after a bookmark is set or deleted
+  localStorage.setItem('bookmarks', JSON.stringify(bm));
+  localStorage.setItem('bookmarksID', JSON.stringify(bmID));
+};
 const addBookmark = function (recipe) {
   // Add recipe ID to the state object's bookmark list/array
   state.bookmarks.push(recipe);
   state.bookmarksID.push(recipe.id);
   // Mark current recipe as bookmarked (adds white to the bookmark icon)
   state.recipe.bookmarked = true;
+  persistBookmarks(state.bookmarks, state.bookmarksID);
   console.log('state post addition', state);
 };
 const deleteBookmark = function (recipe) {
@@ -13152,6 +13163,7 @@ const deleteBookmark = function (recipe) {
   state.bookmarksID.splice(ind, 1);
   // Mark current recipe as NOT bookmarked (removes white to the bookmark icon)
   state.recipe.bookmarked = false;
+  persistBookmarks(state.bookmarks, state.bookmarksID);
   console.log('state post deletion', state);
 };
 const getSearchResultsPage = function (page = state.search.page) {
@@ -13163,6 +13175,13 @@ const getSearchResultsPage = function (page = state.search.page) {
   const end = page * _configJs.RES_PER_PAGE;
   return state.search.results.slice(start, end);
 };
+const initBM = function () {
+  const storage1 = localStorage.getItem('bookmarks');
+  const storage2 = localStorage.getItem('bookmarksID');
+  if (storage1) state.bookmarks = JSON.parse(storage1);
+  if (storage2) state.bookmarksID = JSON.parse(storage2);
+};
+initBM();
 
 },{"regenerator-runtime":"62Qib","./config.js":"6pr2F","./helpers.js":"581KF","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"6pr2F":[function(require,module,exports) {
 var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
@@ -13982,6 +14001,9 @@ class bookmarksView extends _ViewJsDefault.default {
       return this._generateMarkupPreview(dataObj);
     }).join('');
     return generateAll;
+  }
+  addHandlerRender(handler) {
+    window.addEventListener('load', handler);
   }
   addHandlerPreview(handler) {
     this._bookmarksButton.addEventListener('mouseenter', handler);
