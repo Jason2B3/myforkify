@@ -13302,7 +13302,7 @@ class RecipeView extends _ViewJsDefault.default {
 exports.default = new RecipeView();
 
 },{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","url:../../img/favicon.png":"6I4FL","url:../../img/icons.svg":"3t5dV","url:../../img/logo.png":"56yxw","fractional":"5jzJt","./View.js":"48jhP"}],"6I4FL":[function(require,module,exports) {
-module.exports = require('./bundle-url').getBundleURL() + "favicon.98e27482.png"
+module.exports = require('./bundle-url').getBundleURL() + "favicon.HASH_REF_12633852510b194df197ace898e27482.png"
 },{"./bundle-url":"3seVR"}],"3seVR":[function(require,module,exports) {
 "use strict";
 
@@ -13350,9 +13350,9 @@ exports.getBundleURL = getBundleURLCached;
 exports.getBaseURL = getBaseURL;
 exports.getOrigin = getOrigin;
 },{}],"3t5dV":[function(require,module,exports) {
-module.exports = require('./bundle-url').getBundleURL() + "icons.d4a14980.svg"
+module.exports = require('./bundle-url').getBundleURL() + "icons.HASH_REF_f6727c52d326b6f99dffa0b9d4a14980.svg"
 },{"./bundle-url":"3seVR"}],"56yxw":[function(require,module,exports) {
-module.exports = require('./bundle-url').getBundleURL() + "logo.e2e2f3a5.png"
+module.exports = require('./bundle-url').getBundleURL() + "logo.HASH_REF_1086a9c9992a04bde0ba1224e2e2f3a5.png"
 },{"./bundle-url":"3seVR"}],"5jzJt":[function(require,module,exports) {
 /*
 fraction.js
@@ -13953,13 +13953,7 @@ exports.default = new paginationView();
 },{"url:../../img/icons.svg":"3t5dV","./View.js":"48jhP","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"2EbNZ":[function(require,module,exports) {
 var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
 _parcelHelpers.defineInteropFlag(exports);
-require('url:../../img/favicon.png');
-var _urlImgIconsSvg = require('url:../../img/icons.svg');
-var _urlImgIconsSvgDefault = _parcelHelpers.interopDefault(_urlImgIconsSvg);
-require('url:../../img/logo.png');
-var _ViewJs = require('./View.js');
-var _ViewJsDefault = _parcelHelpers.interopDefault(_ViewJs);
-class bookmarksView extends _ViewJsDefault.default {
+class bookmarksView extends View {
   _parentElement = document.querySelector('.bookmarks__list');
   _errorMSG = `No bookmarks yet. Find a nice recipe you'd like to save :)`;
   _data;
@@ -13981,7 +13975,7 @@ class bookmarksView extends _ViewJsDefault.default {
         <!--
         <div class="preview__user-generated">
           <svg>
-            <use href="${_urlImgIconsSvgDefault.default}#icon-user"></use>
+            <use href="${icons}#icon-user"></use>
           </svg>
         </div>
         -->
@@ -13992,6 +13986,6 @@ class bookmarksView extends _ViewJsDefault.default {
 }
 exports.default = new bookmarksView();
 
-},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","url:../../img/favicon.png":"6I4FL","url:../../img/icons.svg":"3t5dV","url:../../img/logo.png":"56yxw","./View.js":"48jhP"}]},["7BONy","3miIZ"], "3miIZ", "parcelRequire2d58")
+},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}]},["7BONy","3miIZ"], "3miIZ", "parcelRequire2d58")
 
-//# sourceMappingURL=index.250b04c7.js.map
+//# sourceMappingURL=index.HASH_REF_6315ebf922a29661e8263da0250b04c7.js.map

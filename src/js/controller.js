@@ -3,6 +3,7 @@ import recipeView from './views/recipeView.js';
 import { default as searchView } from './views/searchView.js';
 import ResultsView from './views/resultsView.js';
 import paginationView from './views/paginationView.js';
+import bookmarksView from './views/bookmarksView.js';
 
 // default NPM imports
 if (module.hot) module.hot.accept();
@@ -81,18 +82,24 @@ const controlPagination = function (goToPage) {
 
 const controlAddBookmark = function () {
   console.log('controller top', model.state.recipe.bookmarked);
-  // If a recipe IS NOT bookmarked yet, bookmark it
+  // 1a) If a recipe IS NOT bookmarked yet, bookmark it
   if (!model.state.recipe.bookmarked) {
     model.addBookmark(model.state.recipe);
     console.log('controller mid', model.state.recipe.bookmarked);
+    // 1b) Update recipeView
     recipeView.update(model.state.recipe);
+    // 1c) Render bookmarks
+    bookmarksView.render(model.state.bookmarks);
     return;
   }
-  // If a recipe IS bookmarked, remove it
+  // 2a) If a recipe IS bookmarked, remove it
   if (model.state.recipe.bookmarked) {
     model.deleteBookmark(model.state.recipe);
     console.log('controller bot', model.state.recipe.bookmarked);
+    // 2b) update recipeView
     recipeView.update(model.state.recipe);
+    // 2c) Render bookmarks
+    bookmarksView.render(model.state.bookmarks);
     return;
   }
 };
