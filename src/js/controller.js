@@ -86,32 +86,35 @@ const controlAddBookmark = function () {
     model.addBookmark(model.state.recipe);
     // 1b) Update recipeView
     recipeView.update(model.state.recipe);
-    // 1c) Render bookmarks
-    //! MUST FIX
-    bookmarksView.render(model.state.bookmarkDatum);
-    //!
+    // 1c) Give bookmark data to the bookMarksView Module
+    bookmarksView._dataTransfer(model.state.bookmarks, model.state.bookmarksID)
+
     return;
   }
   // 2a) If a recipe IS bookmarked, remove it
   if (model.state.recipe.bookmarked) {
     model.deleteBookmark(model.state.recipe);
-    console.log('controller bot', model.state.recipe.bookmarks);
     // 2b) update recipeView
     recipeView.update(model.state.recipe);
-    // 2c) Render bookmarks
-    //! MUST FIX
-    bookmarksView.render(model.state.bookmarks);
-    //!
+    // 2c) Give bookmark data to the bookMarksView Module
+    bookmarksView._dataTransfer(model.state.bookmarks, model.state.bookmarksID)
     return;
   }
 };
+const controlHoverBookmark= function(){
+  // List all the bookmarked recipe previews, but only when hovering
+  bookmarksView.render(model.state.bookmarks)
 
+  // Shadow the recipe we're currently on
+  // Move the shadow when we hover over a specific recipe on the preview list
+}
 //@ This is the MVC Version of Pub-Sub
 const init = function () {
   recipeView.addHandlerRender(controlRecipes);
   searchView.addHandlerSearch(controlSearchResults);
   paginationView.addHandlerClick(controlPagination);
   recipeView.addHandlerBookmark(controlAddBookmark);
+  bookmarksView.addHandlerPreview(controlHoverBookmark) //! fixxx
   //@ each handler is a shotcaller function defined inside the controller
 };
 init();
