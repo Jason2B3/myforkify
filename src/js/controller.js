@@ -79,7 +79,6 @@ const controlPagination = function (goToPage) {
   // FYI: goToPage is an argument fed to this ƒ() by...
   // paginationView.js addHandlerClick() function
 };
-//! LAST FLASH ---------------------------------------------------------------
 const controlAddBookmark = function () {
   // 1a) If a recipe IS NOT bookmarked yet, bookmark it
   if (!model.state.recipe.bookmarked) {
@@ -119,4 +118,3 @@ const init = function () {
   //@ each handler is a shotcaller function defined inside the controller
 };
 init();
-//! ---------------------------------------------------------------

@@ -77,7 +77,6 @@ export const loadRecipe = async function (id) {
     // PASSES REJECTED PROMISE TO THE OTHER ASYNC FUNCTION THAT USES loadRecipe()
   }
 };
-//! LAST FLASH --------------------------------------------------------------------
 //@ Save the current bookmarks to local storage
 const persistBookmarks = function (bm, bmID) {
   // used after a bookmark is set or deleted
@@ -104,7 +103,6 @@ export const deleteBookmark = function (recipe) {
   persistBookmarks(state.bookmarks, state.bookmarksID);
   console.log('state post deletion', state);
 };
-//!--------------------------------------------------------------------
 
 //% PAGINATION PART 1:
 //% AIM: Only show the first 10 search results in our rendered search list
