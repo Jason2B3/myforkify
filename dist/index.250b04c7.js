@@ -542,6 +542,7 @@ const controlHoverBookmark = function () {
   // List all the bookmarked recipe previews, but only when hovering
   // Shadow the recipe we're currently on
   // Move the shadow when we hover over a specific recipe on the preview list
+  _viewsBookmarksViewJsDefault.default._dataTransfer(_modelJs.state.bookmarks, _modelJs.state.bookmarksID);
   _viewsBookmarksViewJsDefault.default.render(_modelJs.state.bookmarks);
 };
 // @ This is the MVC Version of Pub-Sub
